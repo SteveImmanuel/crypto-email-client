@@ -1,15 +1,7 @@
 import React from 'react';
 import { withStyles, fade } from '@material-ui/core/styles';
 import { BrowserRouter as Router, Switch, Route } from 'react-router-dom';
-import { Drawer, CssBaseline, AppBar, Toolbar, InputBase, IconButton, Snackbar, Fab } from '@material-ui/core';
-import MenuIcon from '@material-ui/icons/Menu';
-import SearchIcon from '@material-ui/icons/Search';
-import RefreshIcon from '@material-ui/icons/Refresh';
-import MailIcon from '@material-ui/icons/Mail';
-import KeyboardBackspaceIcon from '@material-ui/icons/KeyboardBackspace';
-import MoreVertIcon from '@material-ui/icons/MoreVert';
-import DeleteIcon from '@material-ui/icons/Delete';
-import auth from '../utils/Auth';
+import { Drawer, CssBaseline } from '@material-ui/core';
 import DrawerList from './Drawer/DrawerList';
 import Inbox from './EmailList/Inbox';
 import Read from './Read/Read';
@@ -17,12 +9,7 @@ import Compose from './Compose/Compose';
 
 const styles = theme => {
   return {
-    grow: {
-      flexGrow: 1
-    },
-    menuButton: {
-      marginRight: theme.spacing(2),
-    },
+    
     title: {
       display: 'none',
       [theme.breakpoints.up('sm')]: {
@@ -65,14 +52,6 @@ const styles = theme => {
       [theme.breakpoints.up('md')]: {
         width: '20ch',
       },
-    },
-    fab: {
-      position: 'absolute',
-      bottom: theme.spacing(2),
-      right: theme.spacing(2),
-    },
-    extendedIcon: {
-      marginRight: theme.spacing(1)
     }
   }
 }
@@ -122,11 +101,12 @@ const dummyData = [
 ]
 
 
+
 class Main extends React.Component {
   state = {
     isDrawerOpen: false,
     isRefreshing: true,
-    isInDetailMode: false,
+    currentPage: 0,
   };
 
 
@@ -141,79 +121,24 @@ class Main extends React.Component {
     const { classes } = this.props;
 
     let toolbar;
-    if (this.state.isInDetailMode) {
-      toolbar = (
-        <Toolbar>
-          <IconButton
-            className={classes.menuButton}
-            color='inherit'
-          // onClick={this.toggleDrawer(true)}
-          >
-            <KeyboardBackspaceIcon />
-          </IconButton>
-
-          <div className={classes.grow} />
-
-          <IconButton color='inherit'>
-            <DeleteIcon />
-          </IconButton>
-          <IconButton color='inherit'>
-            <MoreVertIcon />
-          </IconButton>
-        </Toolbar>
-      )
-    } else {
-      toolbar = (
-        <Toolbar>
-          <IconButton
-            className={classes.menuButton}
-            color='inherit'
-            onClick={this.toggleDrawer(true)}
-          >
-            <MenuIcon />
-          </IconButton>
-
-          <div className={classes.search}>
-            <div className={classes.searchIcon}>
-              <SearchIcon />
-            </div>
-            <InputBase
-              placeholder='Search email...'
-              classes={{
-                root: classes.inputRoot,
-                input: classes.inputInput,
-              }}
-            />
-          </div>
-
-          <IconButton color='inherit' onClick={this.refresh}>
-            <RefreshIcon />
-          </IconButton>
-        </Toolbar>
-      )
-    }
 
     return (
-      <div className={classes.root}>
-        <CssBaseline />
+      <Router>
 
-        <AppBar position='sticky'>
-          {toolbar}
-        </AppBar>
+        <CssBaseline />
 
         <Drawer anchor='left' open={this.state.isDrawerOpen} onClose={this.toggleDrawer(false)}>
           <DrawerList toggleDrawer={this.toggleDrawer} />
         </Drawer>
-        
-        {/* <Inbox emails={dummyData}/> */}
-        {/* <Read /> */}
-        <Compose />
 
-        <Fab variant='extended' color='secondary' className={classes.fab}>
-          <MailIcon className={classes.extendedIcon} />
-          Compose
-        </Fab>
-      </div>
+
+        <Inbox emails={dummyData} toggleDrawer={this.toggleDrawer}/>
+        {/* <Read /> */}
+        {/* <Compose /> */}
+
+        
+      </Router>
+
     );
   }
 }
