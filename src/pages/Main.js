@@ -1,11 +1,11 @@
 import React from 'react';
 import { withStyles, fade } from '@material-ui/core/styles';
-import { withSnackbar } from 'notistack';
 import { BrowserRouter as Router, Switch, Route } from 'react-router-dom';
-import { Drawer, CssBaseline, AppBar, Toolbar, InputBase, IconButton, Typography, Fab } from '@material-ui/core';
+import { Drawer, CssBaseline, AppBar, Toolbar, InputBase, IconButton, Snackbar, Fab } from '@material-ui/core';
 import MenuIcon from '@material-ui/icons/Menu';
 import SearchIcon from '@material-ui/icons/Search';
 import RefreshIcon from '@material-ui/icons/Refresh';
+import MailIcon from '@material-ui/icons/Mail';
 import auth from '../utils/auth';
 import DrawerList from './Drawer/DrawerList';
 import Inbox from './EmailList/Inbox';
@@ -66,6 +66,9 @@ const styles = theme => {
       bottom: theme.spacing(2),
       right: theme.spacing(2),
     },
+    extendedIcon: {
+      marginRight: theme.spacing(1)
+    },
   }
 }
 
@@ -73,12 +76,16 @@ const styles = theme => {
 class Main extends React.Component {
   state = {
     isDrawerOpen: false,
+    isRefreshing: true,
   };
 
 
   toggleDrawer = (open) => (event) => {
     this.setState({ isDrawerOpen: open });
   };
+
+  refresh = () => {
+  }
 
   render() {
     const { classes } = this.props;
@@ -87,11 +94,11 @@ class Main extends React.Component {
       <div className={classes.root}>
         <CssBaseline />
 
-        <AppBar position="sticky">
+        <AppBar position='sticky'>
           <Toolbar>
             <IconButton
               className={classes.menuButton}
-              color="inherit"
+              color='inherit'
               onClick={this.toggleDrawer(true)}
             >
               <MenuIcon />
@@ -102,7 +109,7 @@ class Main extends React.Component {
                 <SearchIcon />
               </div>
               <InputBase
-                placeholder="Search email..."
+                placeholder='Search email...'
                 classes={{
                   root: classes.inputRoot,
                   input: classes.inputInput,
@@ -110,7 +117,7 @@ class Main extends React.Component {
               />
             </div>
 
-            <IconButton color="inherit">
+            <IconButton color='inherit' onClick={this.refresh}>
               <RefreshIcon />
             </IconButton>
           </Toolbar>
@@ -120,9 +127,10 @@ class Main extends React.Component {
           <DrawerList toggleDrawer={this.toggleDrawer} />
         </Drawer>
 
-        <Inbox/>
+        <Inbox />
 
-        <Fab variant="extended" color="secondary" className={classes.fab}>
+        <Fab variant='extended' color='secondary' className={classes.fab}>
+          <MailIcon className={classes.extendedIcon} />
           Compose
         </Fab>
       </div>
