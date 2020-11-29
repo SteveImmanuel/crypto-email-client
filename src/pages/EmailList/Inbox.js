@@ -94,7 +94,7 @@ export default function Inbox(props) {
               secondary={styledDesc(email.sender, email.content)}
             />
             <ListItemText
-              className={classes.rightAligned}
+              class={classes.rightAligned}
               secondary={formatToTimeZone(email.datetime, 'D MMM', { timeZone: 'Asia/Jakarta' })}
             />
           </ListItem>
