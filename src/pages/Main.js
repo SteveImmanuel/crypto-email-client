@@ -2,7 +2,7 @@ import React from 'react';
 import { withStyles, fade } from '@material-ui/core/styles';
 import { withSnackbar } from 'notistack';
 import { BrowserRouter as Router, Switch, Route } from 'react-router-dom';
-import { Drawer, CssBaseline, AppBar, Toolbar, InputBase, IconButton, Typography } from '@material-ui/core';
+import { Drawer, CssBaseline, AppBar, Toolbar, InputBase, IconButton, Typography, Fab } from '@material-ui/core';
 import MenuIcon from '@material-ui/icons/Menu';
 import SearchIcon from '@material-ui/icons/Search';
 import RefreshIcon from '@material-ui/icons/Refresh';
@@ -61,6 +61,11 @@ const styles = theme => {
         width: '20ch',
       },
     },
+    fab: {
+      position: 'absolute',
+      bottom: theme.spacing(2),
+      right: theme.spacing(2),
+    },
   }
 }
 
@@ -116,6 +121,10 @@ class Main extends React.Component {
         </Drawer>
 
         <Inbox/>
+
+        <Fab variant="extended" color="secondary" className={classes.fab}>
+          Compose
+        </Fab>
       </div>
     );
   }
