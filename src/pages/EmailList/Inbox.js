@@ -53,6 +53,14 @@ export default function Inbox(props) {
     );
   }
 
+  const readEmail = (id) => {
+    props.history.push(`/read/${id}`);
+  }
+
+  const composeEmail = () => {
+    props.history.push('/compose');
+  }
+
   return (
     <React.Fragment>
       <AppBar position='sticky'>
@@ -74,21 +82,25 @@ export default function Inbox(props) {
       </AppBar>
       <List>
         {props.emails.map((email, index) => (
-          <ListItem button divider className={clsx({ [classes.unread]: email.isRead })} key={index}>
+          <ListItem
+            button
+            divider
+            className={clsx({ [classes.unread]: email.isRead })}
+            key={index}
+            onClick={() => readEmail(1)}
+          >
             <ListItemText
-              disableTypograhpy
               primary={styledTitle(email.subject)}
               secondary={styledDesc(email.sender, email.content)}
             />
             <ListItemText
-              class={classes.rightAligned}
+              className={classes.rightAligned}
               secondary={formatToTimeZone(email.datetime, 'D MMM', { timeZone: 'Asia/Jakarta' })}
             />
           </ListItem>
-
         ))}
       </List>
-      <Fab variant='extended' color='secondary' className={classes.fab}>
+      <Fab variant='extended' color='secondary' className={classes.fab} onClick={composeEmail}>
         <MailIcon className={classes.extendedIcon} />
           Compose
       </Fab>

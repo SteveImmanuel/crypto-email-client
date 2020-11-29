@@ -36,6 +36,10 @@ const styles = makeStyles({
 
 export default function Read(props) {
   const classes = styles();
+  
+  const back = () => {
+    props.history.goBack();
+  }
 
   return (
     <React.Fragment>
@@ -44,6 +48,7 @@ export default function Read(props) {
           <IconButton
             className={classes.menuButton}
             color='inherit'
+            onClick={back}
           >
             <KeyboardBackspaceIcon />
           </IconButton>
@@ -63,18 +68,20 @@ export default function Read(props) {
         <Card>
           <CardContent>
             <table>
-              <tr>
-                <td className={classes.detailKey}>From</td>
-                <td >sender@mail.co</td>
-              </tr>
-              <tr>
-                <td className={classes.detailKey}>To</td>
-                <td >john.doe@gmail.com</td>
-              </tr>
-              <tr>
-                <td className={classes.detailKey}>Date</td>
-                <td >29 Nov 2020, 20:10</td>
-              </tr>
+              <tbody>
+                <tr>
+                  <td className={classes.detailKey}>From</td>
+                  <td >sender@mail.co</td>
+                </tr>
+                <tr>
+                  <td className={classes.detailKey}>To</td>
+                  <td >john.doe@gmail.com</td>
+                </tr>
+                <tr>
+                  <td className={classes.detailKey}>Date</td>
+                  <td >29 Nov 2020, 20:10</td>
+                </tr>
+              </tbody>
             </table>
           </CardContent>
         </Card>

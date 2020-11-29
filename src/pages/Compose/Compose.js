@@ -39,6 +39,10 @@ const styles = makeStyles({
 export default function Read(props) {
   const classes = styles();
 
+  const back = () => {
+    props.history.goBack();
+  }
+
   return (
     <React.Fragment>
       <AppBar position='sticky'>
@@ -46,6 +50,7 @@ export default function Read(props) {
           <IconButton
             className={classes.menuButton}
             color='inherit'
+            onClick={back}
           >
             <KeyboardBackspaceIcon />
           </IconButton>
