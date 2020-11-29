@@ -3,7 +3,7 @@ import { Login } from './pages/Login';
 import Main from './pages/Main';
 import { NotFound } from './pages/NotFound';
 import { BrowserRouter as Router, Switch, Route } from 'react-router-dom';
-import { ProtectedRoute, AuthRoute } from './utils/custom-route';
+import { ProtectedRoute, AuthRoute } from './utils/CostomRoute';
 
 
 function App() {

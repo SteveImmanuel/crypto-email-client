@@ -1,6 +1,6 @@
 import React from 'react';
 import { Route, Redirect } from 'react-router-dom'
-import auth from './auth';
+import auth from './Auth';
 
 //redirect to login page if visited when not authenticated
 export const ProtectedRoute = ({ component: Component, ...rest }) => {

@@ -6,7 +6,7 @@ import MenuIcon from '@material-ui/icons/Menu';
 import SearchIcon from '@material-ui/icons/Search';
 import RefreshIcon from '@material-ui/icons/Refresh';
 import MailIcon from '@material-ui/icons/Mail';
-import auth from '../utils/auth';
+import auth from '../utils/Auth';
 import DrawerList from './Drawer/DrawerList';
 import Inbox from './EmailList/Inbox';
 
