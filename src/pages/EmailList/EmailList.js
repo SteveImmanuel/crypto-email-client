@@ -1,6 +1,17 @@
 import React from 'react';
 import clsx from 'clsx';
-import { List, ListItem, ListItemText, Typography, AppBar, Toolbar, IconButton, Fab, LinearProgress } from '@material-ui/core';
+import {
+  List,
+  ListItem,
+  ListItemText,
+  Typography,
+  AppBar,
+  Toolbar,
+  IconButton,
+  Fab,
+  LinearProgress,
+  ListItemSecondaryAction,
+} from '@material-ui/core';
 import { fade } from '@material-ui/core/styles/colorManipulator';
 import { formatToTimeZone } from 'date-fns-timezone';
 import { withStyles } from '@material-ui/core/styles';
@@ -9,7 +20,7 @@ import MailIcon from '@material-ui/icons/Mail';
 import RefreshIcon from '@material-ui/icons/Refresh';
 import { NotFound } from '../NotFound';
 
-const styles = theme => {
+const styles = (theme) => {
   return {
     rightAligned: {
       textAlign: 'right',
@@ -34,13 +45,13 @@ const styles = theme => {
     },
     title: {
       display: 'flex',
-      justifyContent: 'space-between'
+      justifyContent: 'space-between',
     },
     datetime: {
-      marginLeft: theme.spacing(1)
-    }
-  }
-}
+      marginLeft: theme.spacing(1),
+    },
+  };
+};
 
 const dummyContent = `
 Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt
@@ -57,146 +68,146 @@ donec massa sapien faucibus et molestie ac.
 
 const dummyData = [
   {
-    subject: "Email Subject",
-    sender: "Sender",
+    subject: 'Email Subject',
+    sender: 'Sender',
     content: dummyContent,
     datetime: new Date(),
-    isRead: false
+    isRead: false,
   },
   {
-    subject: "Email Subject 2",
-    sender: "Sender 2",
+    subject: 'Email Subject 2',
+    sender: 'Sender 2',
     content: dummyContent,
     datetime: new Date(),
-    isRead: false
+    isRead: false,
   },
   {
-    subject: "Email Subject 3",
-    sender: "Sender 3",
+    subject: 'Email Subject 3',
+    sender: 'Sender 3',
     content: dummyContent,
     datetime: new Date(),
-    isRead: true
+    isRead: true,
   },
   {
-    subject: "Email Subject 4",
-    sender: "Sender 4",
+    subject: 'Email Subject 4',
+    sender: 'Sender 4',
     content: dummyContent,
     datetime: new Date(),
-    isRead: true
+    isRead: true,
   },
   {
-    subject: "Email Subject",
-    sender: "Sender",
+    subject: 'Email Subject',
+    sender: 'Sender',
     content: dummyContent,
     datetime: new Date(),
-    isRead: false
+    isRead: false,
   },
   {
-    subject: "Email Subject 2",
-    sender: "Sender 2",
+    subject: 'Email Subject 2',
+    sender: 'Sender 2',
     content: dummyContent,
     datetime: new Date(),
-    isRead: false
+    isRead: false,
   },
   {
-    subject: "Email Subject 3",
-    sender: "Sender 3",
+    subject: 'Email Subject 3',
+    sender: 'Sender 3',
     content: dummyContent,
     datetime: new Date(),
-    isRead: true
+    isRead: true,
   },
   {
-    subject: "Email Subject",
-    sender: "Sender",
+    subject: 'Email Subject',
+    sender: 'Sender',
     content: dummyContent,
     datetime: new Date(),
-    isRead: false
+    isRead: false,
   },
   {
-    subject: "Email Subject 2",
-    sender: "Sender 2",
+    subject: 'Email Subject 2',
+    sender: 'Sender 2',
     content: dummyContent,
     datetime: new Date(),
-    isRead: false
+    isRead: false,
   },
   {
-    subject: "Email Subject 3",
-    sender: "Sender 3",
+    subject: 'Email Subject 3',
+    sender: 'Sender 3',
     content: dummyContent,
     datetime: new Date(),
-    isRead: true
+    isRead: true,
   },
   {
-    subject: "Email Subject",
-    sender: "Sender",
+    subject: 'Email Subject',
+    sender: 'Sender',
     content: dummyContent,
     datetime: new Date(),
-    isRead: false
+    isRead: false,
   },
   {
-    subject: "Email Subject 2",
-    sender: "Sender 2",
+    subject: 'Email Subject 2',
+    sender: 'Sender 2',
     content: dummyContent,
     datetime: new Date(),
-    isRead: false
+    isRead: false,
   },
   {
-    subject: "Email Subject 3",
-    sender: "Sender 3",
+    subject: 'Email Subject 3',
+    sender: 'Sender 3',
     content: dummyContent,
     datetime: new Date(),
-    isRead: true
+    isRead: true,
   },
   {
-    subject: "Email Subject 4",
-    sender: "Sender 4",
+    subject: 'Email Subject 4',
+    sender: 'Sender 4',
     content: dummyContent,
     datetime: new Date(),
-    isRead: true
+    isRead: true,
   },
   {
-    subject: "Email Subject",
-    sender: "Sender",
+    subject: 'Email Subject',
+    sender: 'Sender',
     content: dummyContent,
     datetime: new Date(),
-    isRead: false
+    isRead: false,
   },
   {
-    subject: "Email Subject 2",
-    sender: "Sender 2",
+    subject: 'Email Subject 2',
+    sender: 'Sender 2',
     content: dummyContent,
     datetime: new Date(),
-    isRead: false
+    isRead: false,
   },
   {
-    subject: "Email Subject 3",
-    sender: "Sender 3",
+    subject: 'Email Subject 3',
+    sender: 'Sender 3',
     content: dummyContent,
     datetime: new Date(),
-    isRead: true
+    isRead: true,
   },
   {
-    subject: "Email Subject",
-    sender: "Sender",
+    subject: 'Email Subject',
+    sender: 'Sender',
     content: dummyContent,
     datetime: new Date(),
-    isRead: false
+    isRead: false,
   },
   {
-    subject: "Email Subject 2",
-    sender: "Sender 2",
+    subject: 'Email Subject 2',
+    sender: 'Sender 2',
     content: dummyContent,
     datetime: new Date(),
-    isRead: false
+    isRead: false,
   },
   {
-    subject: "Email Subject 3",
-    sender: "Sender 3",
+    subject: 'Email Subject 3',
+    sender: 'Sender 3',
     content: dummyContent,
     datetime: new Date(),
-    isRead: true
+    isRead: true,
   },
-]
+];
 
 const validType = ['inbox', 'sent'];
 
@@ -210,9 +221,9 @@ class EmailList extends React.Component {
 
   fetchEmails = () => {
     setTimeout(() => {
-      this.setState({ isFetching: false, emails: [...this.state.emails, ...dummyData], page: this.state.page + 1 })
+      this.setState({ isFetching: false, emails: [...this.state.emails, ...dummyData], page: this.state.page + 1 });
     }, 1000);
-  }
+  };
 
   toggleDrawer = (open) => (event) => {
     this.setState({ isDrawerOpen: open });
@@ -228,7 +239,7 @@ class EmailList extends React.Component {
 
   styledDesc = (sender, content) => {
     return (
-      <Typography variant='body2' noWrap>
+      <Typography variant="body2" noWrap>
         <b>{sender}</b> - {content}
       </Typography>
     );
@@ -237,11 +248,11 @@ class EmailList extends React.Component {
   styledDate = (datetime) => {
     const formatted = formatToTimeZone(datetime, 'D MMM', { timeZone: 'Asia/Jakarta' });
     return (
-      <Typography noWrap variant='caption' className={this.props.classes.datetime}>
+      <Typography noWrap variant="caption" className={this.props.classes.datetime}>
         {formatted}
       </Typography>
-    )
-  }
+    );
+  };
 
   readEmail = (id) => {
     this.props.history.push(`/app/read/${id}`);
@@ -255,15 +266,21 @@ class EmailList extends React.Component {
     const windowHeight = 'innerHeight' in window ? window.innerHeight : document.documentElement.offsetHeight;
     const body = document.body;
     const html = document.documentElement;
-    const docHeight = Math.max(body.scrollHeight, body.offsetHeight, html.clientHeight, html.scrollHeight, html.offsetHeight);
+    const docHeight = Math.max(
+      body.scrollHeight,
+      body.offsetHeight,
+      html.clientHeight,
+      html.scrollHeight,
+      html.offsetHeight
+    );
     const windowBottom = windowHeight + window.pageYOffset;
     if (windowBottom >= docHeight && !this.state.isFetching) {
       this.setState({
-        isFetching: true
+        isFetching: true,
       });
       this.fetchEmails();
     }
-  }
+  };
 
   componentDidMount() {
     document.addEventListener('scroll', this.handleScroll);
@@ -283,17 +300,17 @@ class EmailList extends React.Component {
     if (validType.includes(type)) {
       return (
         <React.Fragment>
-          <AppBar position='sticky'>
+          <AppBar position="sticky">
             <Toolbar>
-              <IconButton className={classes.menuButton} color='inherit' onClick={this.props.toggleDrawer(true)}>
+              <IconButton className={classes.menuButton} color="inherit" onClick={this.props.toggleDrawer(true)}>
                 <MenuIcon />
               </IconButton>
 
-              <Typography className={classes.grow} variant='h6'>
+              <Typography className={classes.grow} variant="h6">
                 {title}
               </Typography>
 
-              <IconButton color='inherit'>
+              <IconButton color="inherit">
                 <RefreshIcon />
               </IconButton>
             </Toolbar>
@@ -311,14 +328,13 @@ class EmailList extends React.Component {
                   primary={this.styledTitle(email.subject, email.datetime)}
                   secondary={this.styledDesc(email.sender, email.content)}
                 />
-                <ListItemText
-                  class={classes.rightAligned}
-                  secondary={this.styledDate(email.datetime)}
-                />
+                <ListItemSecondaryAction className={classes.rightAligned}>
+                  {this.styledDate(email.datetime)}
+                </ListItemSecondaryAction>
               </ListItem>
             ))}
           </List>
-          <Fab variant='extended' color='secondary' className={classes.fab} onClick={this.composeEmail}>
+          <Fab variant="extended" color="secondary" className={classes.fab} onClick={this.composeEmail}>
             <MailIcon className={classes.extendedIcon} />
             Compose
           </Fab>
@@ -326,9 +342,8 @@ class EmailList extends React.Component {
         </React.Fragment>
       );
     } else {
-      return <NotFound />
+      return <NotFound />;
     }
-
   }
 }
 
