@@ -1,12 +1,10 @@
 import React from 'react';
 import clsx from 'clsx';
-
+import { useHistory } from 'react-router-dom';
 import { List, ListItem, ListItemIcon, ListItemText, ListSubheader, Divider, Typography } from '@material-ui/core';
 import InboxIcon from '@material-ui/icons/Inbox';
 import SendIcon from '@material-ui/icons/Send';
-import DraftsIcon from '@material-ui/icons/Drafts';
 import MeetingRoomIcon from '@material-ui/icons/MeetingRoom';
-import HttpsIcon from '@material-ui/icons/Https';
 import VpnKeyIcon from '@material-ui/icons/VpnKey';
 import { makeStyles } from '@material-ui/core/styles';
 
@@ -21,6 +19,7 @@ const styles = makeStyles({
 
 export default function DrawerList(props) {
   const classes = styles();
+  const history = useHistory();
 
   return (
     <div
@@ -38,36 +37,32 @@ export default function DrawerList(props) {
       </List>
       <Divider />
       <List subheader={<ListSubheader>Email</ListSubheader>}>
-        <ListItem button>
+        <ListItem button onClick={() => { history.push('/app/list/inbox') }}>
           <ListItemIcon><InboxIcon /></ListItemIcon>
           <ListItemText primary='Inbox' />
         </ListItem>
-        <ListItem button>
+        <ListItem button onClick={() => { history.push('/app/list/sent') }}>
           <ListItemIcon><SendIcon /></ListItemIcon>
           <ListItemText primary='Sent' />
         </ListItem>
-        <ListItem button>
+        {/* <ListItem button >
           <ListItemIcon><DraftsIcon /></ListItemIcon>
           <ListItemText primary='Drafts' />
-        </ListItem>
+        </ListItem> */}
       </List>
       <Divider />
       <List subheader={<ListSubheader>PGP</ListSubheader>}>
-          <ListItem button>
-            <ListItemIcon><VpnKeyIcon /></ListItemIcon>
-            <ListItemText primary='Signing Key' />
-          </ListItem>
-          <ListItem button>
-            <ListItemIcon><HttpsIcon /></ListItemIcon>
-            <ListItemText primary='Encryption Key' />
-          </ListItem>
+        <ListItem button onClick={() => { history.push('/app/keys') }}>
+          <ListItemIcon><VpnKeyIcon /></ListItemIcon>
+          <ListItemText primary='Keys Settings' />
+        </ListItem>
       </List>
       <Divider />
       <List subheader={<ListSubheader>Account</ListSubheader>}>
-          <ListItem button>
-            <ListItemIcon><MeetingRoomIcon /></ListItemIcon>
-            <ListItemText primary='Logout' />
-          </ListItem>
+        <ListItem button>
+          <ListItemIcon><MeetingRoomIcon /></ListItemIcon>
+          <ListItemText primary='Logout' />
+        </ListItem>
       </List>
     </div>
   );

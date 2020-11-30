@@ -18,7 +18,7 @@ function App() {
           </Route>
           <ProtectedRoute path='/app' component={Main} />
           <AuthRoute path='/login' component={Login} />
-          <Route path='*' component={NotFound} />
+          <Route component={NotFound} />
         </Switch>
       </Router>
     </>
