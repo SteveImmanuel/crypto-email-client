@@ -1,6 +1,6 @@
 import React from 'react';
 import { withStyles } from '@material-ui/core/styles';
-import { BrowserRouter as Router, Switch, Route } from 'react-router-dom';
+import { Switch, Route, Redirect } from 'react-router-dom';
 import { Drawer, CssBaseline } from '@material-ui/core';
 import DrawerList from './Drawer/DrawerList';
 import Inbox from './EmailList/Inbox';
@@ -83,23 +83,23 @@ class Main extends React.Component {
     const { classes } = this.props;
 
     return (
-      <Router>
+      <React.Fragment>
 
         <CssBaseline />
 
         <Drawer anchor='left' open={this.state.isDrawerOpen} onClose={this.toggleDrawer(false)}>
           <DrawerList toggleDrawer={this.toggleDrawer} />
         </Drawer>
-
         <Switch>
-          <Route exact path='/' render={(props) => <Inbox {...props} emails={dummyData} toggleDrawer={this.toggleDrawer} />} />
-          <Route path='/inbox' render={(props) => <Inbox {...props} emails={dummyData} toggleDrawer={this.toggleDrawer} />} />
-          <Route path='/compose' render={(props) => <Compose {...props} />} />
-          <Route path='/read' render={(props) => <Read {...props} />} />
+          <Route exact path={`${this.props.match.path}`}>
+            <Redirect to={`${this.props.match.path}/inbox`} />
+          </Route>
+          <Route path={`${this.props.match.path}/inbox`} render={(props) => <Inbox {...props} emails={dummyData} toggleDrawer={this.toggleDrawer} />} />
+          <Route path={`${this.props.match.path}/compose`} render={(props) => <Compose {...props} />} />
+          <Route path={`${this.props.match.path}/read`} render={(props) => <Read {...props} />} />
         </Switch>
 
-      </Router>
-
+      </React.Fragment>
     );
   }
 }

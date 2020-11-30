@@ -1,5 +1,5 @@
 import React from 'react';
-import auth from '../utils/Auth';
+import Auth from '../utils/Auth';
 import { Button, Typography, CssBaseline } from '@material-ui/core';
 import { makeStyles } from '@material-ui/core/styles';
 
@@ -34,31 +34,30 @@ const styles = makeStyles({
   googleIcon: {
     maxHeight: '32px',
   },
+  titleSection: {
+    marginTop: 72,
+    paddingBottom: 72,
+    fontSize: 32,
+    display: 'flex',
+    alignItems: 'center',
+  },
+  titleText: { paddingLeft: 12 }
 });
 
 export const Login = (props) => {
   const classes = styles();
   return (
     <div>
-      <CssBaseline />
-      <div className={classes.mainBody}>
-        <Typography
-          style={{
-            marginTop: 72,
-            paddingBottom: 72,
-            fontSize: 32,
-            display: 'flex',
-            alignItems: 'center',
-          }}
-        >
+        <div className={classes.mainBody}>
+        <Typography className={classes.titleSection}>
           <img src="cryptMailLogo.jpg" alt="cryptMailLogo" height="42px" />
-          <h1 style={{ paddingLeft: 12 }}>CryptMail</h1>
+          <h1 className={classes.titleText}>CryptMail</h1>
         </Typography>
-        <Typography>Please Signin to Continue</Typography>
+        <Typography>Please Sign In to Continue</Typography>
         <br />
         <Button
           onClick={() => {
-            auth.login(() => {});
+            Auth.login(() => {props.history.push('/app')});
           }}
           variant="outlined"
           className={classes.signInButton}

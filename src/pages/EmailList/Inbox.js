@@ -52,11 +52,11 @@ export default function Inbox(props) {
   };
 
   const readEmail = (id) => {
-    props.history.push(`/read/${id}`);
+    props.history.push(`read/${id}`);
   };
 
   const composeEmail = () => {
-    props.history.push('/compose');
+    props.history.push('compose');
   };
 
   return (
@@ -87,6 +87,7 @@ export default function Inbox(props) {
           >
             <ListItemText primary={styledTitle(email.subject)} secondary={styledDesc(email.sender, email.content)} />
             <ListItemText
+              // disableTypography
               class={classes.rightAligned}
               secondary={formatToTimeZone(email.datetime, 'D MMM', { timeZone: 'Asia/Jakarta' })}
             />
