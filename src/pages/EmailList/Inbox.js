@@ -11,25 +11,25 @@ import RefreshIcon from '@material-ui/icons/Refresh';
 const styles = makeStyles({
   rightAligned: {
     textAlign: 'right',
-    verticalAlign: 'top'
+    verticalAlign: 'top',
   },
   unread: {
-    color: fade('rgba(0, 0, 0)', 0.54)
+    color: fade('rgba(0, 0, 0)', 0.54),
   },
   grow: {
-    flexGrow: 1
+    flexGrow: 1,
   },
   menuButton: {
     marginRight: 5,
   },
   fab: {
-    position: 'absolute',
+    position: 'fixed',
     bottom: 20,
     right: 20,
   },
   extendedIcon: {
-    marginRight: 10
-  }
+    marginRight: 10,
+  },
 });
 
 export default function Inbox(props) {
@@ -41,41 +41,37 @@ export default function Inbox(props) {
         <b>{title}</b>
       </Typography>
     );
-  }
+  };
 
   const styledDesc = (sender, content) => {
     return (
-      <Typography
-        variant='body2'
-        noWrap>
+      <Typography variant="body2" noWrap>
         <b>{sender}</b> - {content}
       </Typography>
     );
-  }
+  };
 
   const readEmail = (id) => {
     props.history.push(`/read/${id}`);
-  }
+  };
 
   const composeEmail = () => {
     props.history.push('/compose');
-  }
+  };
 
   return (
     <React.Fragment>
-      <AppBar position='sticky'>
+      <AppBar position="sticky">
         <Toolbar>
-          <IconButton
-            className={classes.menuButton}
-            color='inherit'
-            onClick={props.toggleDrawer(true)}
-          >
+          <IconButton className={classes.menuButton} color="inherit" onClick={props.toggleDrawer(true)}>
             <MenuIcon />
           </IconButton>
 
-          <Typography className={classes.grow} variant='h6'>Inbox</Typography>
+          <Typography className={classes.grow} variant="h6">
+            Inbox
+          </Typography>
 
-          <IconButton color='inherit'>
+          <IconButton color="inherit">
             <RefreshIcon />
           </IconButton>
         </Toolbar>
@@ -89,10 +85,7 @@ export default function Inbox(props) {
             key={index}
             onClick={() => readEmail(1)}
           >
-            <ListItemText
-              primary={styledTitle(email.subject)}
-              secondary={styledDesc(email.sender, email.content)}
-            />
+            <ListItemText primary={styledTitle(email.subject)} secondary={styledDesc(email.sender, email.content)} />
             <ListItemText
               class={classes.rightAligned}
               secondary={formatToTimeZone(email.datetime, 'D MMM', { timeZone: 'Asia/Jakarta' })}
@@ -100,9 +93,9 @@ export default function Inbox(props) {
           </ListItem>
         ))}
       </List>
-      <Fab variant='extended' color='secondary' className={classes.fab} onClick={composeEmail}>
+      <Fab variant="extended" color="secondary" className={classes.fab} onClick={composeEmail}>
         <MailIcon className={classes.extendedIcon} />
-          Compose
+        Compose
       </Fab>
     </React.Fragment>
   );
