@@ -1,6 +1,6 @@
 import React from 'react';
 import Auth from '../utils/Auth';
-import { Button, Typography, CssBaseline } from '@material-ui/core';
+import { Button, Typography } from '@material-ui/core';
 import { makeStyles } from '@material-ui/core/styles';
 
 const styles = makeStyles({
@@ -16,7 +16,6 @@ const styles = makeStyles({
   mainBody: {
     display: 'flex',
     alignItems: 'center',
-    // justifyContent: 'center',
     height: '75vh',
     flexDirection: 'column',
   },
@@ -37,36 +36,35 @@ const styles = makeStyles({
   titleSection: {
     marginTop: 72,
     paddingBottom: 72,
-    fontSize: 32,
-    display: 'flex',
-    alignItems: 'center',
+    fontSize: 42,
   },
-  titleText: { paddingLeft: 12 }
+  titleLogo: { paddingRight: 12 }
 });
 
 export const Login = (props) => {
   const classes = styles();
+  console.log('login')
   return (
     <div>
-        <div className={classes.mainBody}>
-        <Typography className={classes.titleSection}>
-          <img src="cryptMailLogo.jpg" alt="cryptMailLogo" height="42px" />
-          <h1 className={classes.titleText}>CryptMail</h1>
+      <div className={classes.mainBody}>
+        <Typography align='center' variant='h6' className={classes.titleSection}>
+          <img className={classes.titleLogo} src='cryptMailLogo.jpg' alt='cryptMailLogo' height='42px' />
+          CryptMail
         </Typography>
         <Typography>Please Sign In to Continue</Typography>
         <br />
         <Button
           onClick={() => {
-            Auth.login(() => {props.history.push('/app')});
+            Auth.login(() => { props.history.push('/') });
           }}
-          variant="outlined"
+          variant='outlined'
           className={classes.signInButton}
-          component="span"
+          component='span'
         >
           <div className={classes.googleIconContainer}>
             <img
-              src="https://upload.wikimedia.org/wikipedia/commons/thumb/5/53/Google_%22G%22_Logo.svg/1004px-Google_%22G%22_Logo.svg.png"
-              alt="logo"
+              src='https://upload.wikimedia.org/wikipedia/commons/thumb/5/53/Google_%22G%22_Logo.svg/1004px-Google_%22G%22_Logo.svg.png'
+              alt='logo'
               className={classes.googleIcon}
             />
           </div>
