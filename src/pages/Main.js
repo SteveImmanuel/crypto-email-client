@@ -21,25 +21,32 @@ class Main extends React.Component {
   };
 
   logout = () => {
-      Auth.logout(() => { this.props.history.push('/login') });
-  }
+    Auth.logout(() => {
+      this.props.history.push('/login');
+    });
+  };
 
   render() {
-
     return (
       <React.Fragment>
-        <Drawer anchor='left' open={this.state.isDrawerOpen} onClose={this.toggleDrawer(false)}>
-          <DrawerList toggleDrawer={this.toggleDrawer} logout={this.logout}/>
+        <Drawer anchor="left" open={this.state.isDrawerOpen} onClose={this.toggleDrawer(false)}>
+          <DrawerList toggleDrawer={this.toggleDrawer} logout={this.logout} />
         </Drawer>
 
         <Switch>
           <Route exact path={`${this.props.match.path}`}>
             <Redirect to={`${this.props.match.path}/list/inbox`} />
           </Route>
-          <Route path={`${this.props.match.path}/list/:type`} render={(props) => <EmailList {...props} toggleDrawer={this.toggleDrawer} />} />
+          <Route
+            path={`${this.props.match.path}/list/:type`}
+            render={(props) => <EmailList {...props} toggleDrawer={this.toggleDrawer} />}
+          />
           <Route path={`${this.props.match.path}/compose`} render={(props) => <Compose {...props} />} />
           <Route path={`${this.props.match.path}/read`} render={(props) => <Read {...props} />} />
-          <Route path={`${this.props.match.path}/keys`} render={(props) => <Keys {...props} toggleDrawer={this.toggleDrawer} />} />
+          <Route
+            path={`${this.props.match.path}/keys`}
+            render={(props) => <Keys {...props} toggleDrawer={this.toggleDrawer} />}
+          />
           <Route path={`${this.props.match.path}*`} component={NotFound} />
         </Switch>
       </React.Fragment>
