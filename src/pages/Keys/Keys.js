@@ -83,7 +83,7 @@ export default function Keys(props) {
 
 
     const data = await response.json();
-    setSigningKey({ private: data.privateKey, public: data.publicKey })
+    setSigningKey({ private: data.data.privateKey, public: data.data.publicKey })
     setLoading({ ...loading, generateSignKey: false })
     enqueueSnackbar('Key generated', { variant: 'success' });
     setDisableFab(false);
