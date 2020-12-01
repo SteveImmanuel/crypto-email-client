@@ -7,7 +7,7 @@ import SendIcon from '@material-ui/icons/Send';
 import MeetingRoomIcon from '@material-ui/icons/MeetingRoom';
 import VpnKeyIcon from '@material-ui/icons/VpnKey';
 import { makeStyles } from '@material-ui/core/styles';
-
+import Auth from '../../utils/Auth';
 
 const styles = makeStyles({
   list: {
@@ -21,6 +21,8 @@ export default function DrawerList(props) {
   const classes = styles();
   const history = useHistory();
 
+  const { email } = Auth.getData();
+
   return (
     <div
       className={clsx(classes.list)}
@@ -32,7 +34,7 @@ export default function DrawerList(props) {
           <ListItemText primary={<Typography align='center' variant='h5'>CryptMail</Typography>} />
         </ListItem>
         <ListItem>
-          <ListItemText secondary={<Typography noWrap align='center' variant='body2'>john.doe@gmail.com</Typography>} />
+          <ListItemText secondary={<Typography noWrap align='center' variant='body2'>{email}</Typography>} />
         </ListItem>
       </List>
       <Divider />

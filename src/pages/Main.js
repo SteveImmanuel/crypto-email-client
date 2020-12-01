@@ -38,11 +38,15 @@ class Main extends React.Component {
             <Redirect to={`${this.props.match.path}/list/inbox`} />
           </Route>
           <Route
-            path={`${this.props.match.path}/list/:type`}
-            render={(props) => <EmailList {...props} toggleDrawer={this.toggleDrawer} />}
+            path={`${this.props.match.path}/list/inbox`}
+            render={(props) => <EmailList {...props} type='inbox' toggleDrawer={this.toggleDrawer} />}
+          />
+          <Route
+            path={`${this.props.match.path}/list/sent`}
+            render={(props) => <EmailList {...props} type='sent' toggleDrawer={this.toggleDrawer} />}
           />
           <Route path={`${this.props.match.path}/compose`} render={(props) => <Compose {...props} />} />
-          <Route path={`${this.props.match.path}/read`} render={(props) => <Read {...props} />} />
+          <Route path={`${this.props.match.path}/read/:id`} render={(props) => <Read {...props} />} />
           <Route
             path={`${this.props.match.path}/keys`}
             render={(props) => <Keys {...props} toggleDrawer={this.toggleDrawer} />}

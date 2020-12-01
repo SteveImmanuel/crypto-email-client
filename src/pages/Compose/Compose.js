@@ -1,10 +1,8 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { fade } from '@material-ui/core/styles/colorManipulator';
-import { TextField, Checkbox, FormControl, FormControlLabel, FormGroup, AppBar, Toolbar, IconButton, Typography } from '@material-ui/core';
+import { TextField, Checkbox, FormControlLabel, FormGroup, AppBar, Toolbar, IconButton, Typography, Button } from '@material-ui/core';
 import { makeStyles } from '@material-ui/core/styles';
 import KeyboardBackspaceIcon from '@material-ui/icons/KeyboardBackspace';
-import MoreVertIcon from '@material-ui/icons/MoreVert';
-import SendIcon from '@material-ui/icons/Send';
 
 const styles = makeStyles({
   list: {
@@ -36,8 +34,31 @@ const styles = makeStyles({
 });
 
 
-export default function Read(props) {
+export default function Compose(props) {
   const classes = styles();
+  const [email, setEmail] = useState({
+    to: '',
+    subject: '',
+    content: '',
+    signed: false,
+    encrypted: false,
+    key: '',
+  });
+
+
+  const send = async () => {
+    console.log(email);
+    // const response = await fetch(`${config.API_URL}/api/auth/user`,
+    //   {
+    //     method: 'POST',
+    //     headers: {
+    //       'Content-Type': 'application/json'
+    //     },
+    //     credentials: 'include',
+    //     body: JSON.stringify(email)
+    //   }
+    // )
+  }
 
   const back = () => {
     props.history.goBack();
@@ -45,6 +66,7 @@ export default function Read(props) {
 
   return (
     <React.Fragment>
+
       <AppBar position='sticky'>
         <Toolbar>
           <IconButton
@@ -57,55 +79,74 @@ export default function Read(props) {
 
           <Typography className={classes.grow} variant='h6'>Compose</Typography>
 
-          <IconButton color='inherit'>
-            <SendIcon />
-          </IconButton>
-          <IconButton color='inherit'>
-            <MoreVertIcon />
-          </IconButton>
         </Toolbar>
       </AppBar>
-      <div className={classes.container}>
-        <TextField
-          fullWidth
-          required
-          margin='dense'
-          type='email'
-          variant='outlined'
-          label='To'
-          value={props.recipient} />
-        <TextField
-          fullWidth
-          margin='dense'
-          type='text'
-          variant='outlined'
-          label='Subject'
-          value={props.subject} />
-        <FormControl className={classes.pgpForm}>
-          {/* <FormLabel>PGP</FormLabel> */}
+
+      <form onSubmit={send}>
+        <div className={classes.container}>
+          <TextField
+            fullWidth
+            required
+            margin='dense'
+            type='email'
+            variant='outlined'
+            label='To'
+            value={email.to}
+            onChange={(event) => { setEmail({ ...email, to: event.target.value }) }}
+          />
+          <TextField
+            fullWidth
+            required
+            margin='dense'
+            type='text'
+            variant='outlined'
+            label='Subject'
+            value={email.subject}
+            onChange={(event) => { setEmail({ ...email, subject: event.target.value }) }}
+          />
           <FormGroup>
             <FormControlLabel
-              control={<Checkbox name='signature' />}
-              label='Digital Signature'
-            />
-            <FormControlLabel
-              control={<Checkbox name='encryption' />}
+              control={<Checkbox name='encryption'
+                checked={email.encrypted} onChange={(event) => { setEmail({ ...email, encrypted: event.target.checked }) }} />}
               label='Encryption'
             />
+            {
+              email.encrypted &&
+              <TextField
+                fullWidth
+                required
+                margin='dense'
+                type='text'
+                variant='outlined'
+                label='Encryption Key'
+                value={email.key}
+                onChange={(event) => { setEmail({ ...email, key: event.target.value }) }}
+              />
+            }
+            <FormControlLabel
+              control={<Checkbox name='signature'
+                checked={email.signed} onChange={(event) => { setEmail({ ...email, signed: event.target.checked }) }} />}
+              label='Digital Signature'
+            />
           </FormGroup>
-        </FormControl>
 
-        <TextField
-          multiline
-          fullWidth
-          margin='normal'
-          rows='10'
-          rowsMax='20'
-          type='text'
-          variant='outlined'
-          label='Message'
-          value={props.message} />
-      </div>
+          <TextField
+            multiline
+            fullWidth
+            required
+            margin='normal'
+            rows='10'
+            rowsMax='20'
+            type='text'
+            variant='outlined'
+            label='Message'
+            value={email.content}
+            onChange={(event) => { setEmail({ ...email, content: event.target.value }) }}
+          />
+          <Button type="submit" color="primary" variant='outlined' style={{ display: 'flex', marginLeft: 'auto' }}>Send</Button>
+        </div>
+      </form>
+
     </React.Fragment>
   );
 }

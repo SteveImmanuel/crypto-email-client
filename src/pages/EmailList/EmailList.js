@@ -18,7 +18,7 @@ import { withStyles } from '@material-ui/core/styles';
 import MenuIcon from '@material-ui/icons/Menu';
 import MailIcon from '@material-ui/icons/Mail';
 import RefreshIcon from '@material-ui/icons/Refresh';
-import { NotFound } from '../NotFound';
+import config from '../../config';
 
 const styles = (theme) => {
   return {
@@ -26,7 +26,7 @@ const styles = (theme) => {
       textAlign: 'right',
       verticalAlign: 'top',
     },
-    unread: {
+    read: {
       color: fade('rgba(0, 0, 0)', 0.54),
     },
     grow: {
@@ -43,173 +43,11 @@ const styles = (theme) => {
     extendedIcon: {
       marginRight: theme.spacing(1),
     },
-    title: {
-      display: 'flex',
-      justifyContent: 'space-between',
-    },
     datetime: {
       marginLeft: theme.spacing(1),
     },
   };
 };
-
-const dummyContent = `
-Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt
-ut labore et dolore magna aliqua. Rhoncus dolor purus non enim praesent elementum
-facilisis leo vel. Risus at ultrices mi tempus imperdiet. Semper risus in hendrerit
-gravida rutrum quisque non tellus. Convallis convallis tellus id interdum velit laoreet id
-donec ultrices. Odio morbi quis commodo odio aenean sed adipiscing. Amet nisl suscipit
-adipiscing bibendum est ultricies integer quis. Cursus euismod quis viverra nibh cras.
-Metus vulputate eu scelerisque felis imperdiet proin fermentum leo. Mauris commodo quis
-imperdiet massa tincidunt. Cras tincidunt lobortis feugiat vivamus at augue. At augue eget
-arcu dictum varius duis at consectetur lorem. Velit sed ullamcorper morbi tincidunt. Lorem
-donec massa sapien faucibus et molestie ac.
-`;
-
-const dummyData = [
-  {
-    subject: 'Email Subject',
-    sender: 'Sender',
-    content: dummyContent,
-    datetime: new Date(),
-    isRead: false,
-  },
-  {
-    subject: 'Email Subject 2',
-    sender: 'Sender 2',
-    content: dummyContent,
-    datetime: new Date(),
-    isRead: false,
-  },
-  {
-    subject: 'Email Subject 3',
-    sender: 'Sender 3',
-    content: dummyContent,
-    datetime: new Date(),
-    isRead: true,
-  },
-  {
-    subject: 'Email Subject 4',
-    sender: 'Sender 4',
-    content: dummyContent,
-    datetime: new Date(),
-    isRead: true,
-  },
-  {
-    subject: 'Email Subject',
-    sender: 'Sender',
-    content: dummyContent,
-    datetime: new Date(),
-    isRead: false,
-  },
-  {
-    subject: 'Email Subject 2',
-    sender: 'Sender 2',
-    content: dummyContent,
-    datetime: new Date(),
-    isRead: false,
-  },
-  {
-    subject: 'Email Subject 3',
-    sender: 'Sender 3',
-    content: dummyContent,
-    datetime: new Date(),
-    isRead: true,
-  },
-  {
-    subject: 'Email Subject',
-    sender: 'Sender',
-    content: dummyContent,
-    datetime: new Date(),
-    isRead: false,
-  },
-  {
-    subject: 'Email Subject 2',
-    sender: 'Sender 2',
-    content: dummyContent,
-    datetime: new Date(),
-    isRead: false,
-  },
-  {
-    subject: 'Email Subject 3',
-    sender: 'Sender 3',
-    content: dummyContent,
-    datetime: new Date(),
-    isRead: true,
-  },
-  {
-    subject: 'Email Subject',
-    sender: 'Sender',
-    content: dummyContent,
-    datetime: new Date(),
-    isRead: false,
-  },
-  {
-    subject: 'Email Subject 2',
-    sender: 'Sender 2',
-    content: dummyContent,
-    datetime: new Date(),
-    isRead: false,
-  },
-  {
-    subject: 'Email Subject 3',
-    sender: 'Sender 3',
-    content: dummyContent,
-    datetime: new Date(),
-    isRead: true,
-  },
-  {
-    subject: 'Email Subject 4',
-    sender: 'Sender 4',
-    content: dummyContent,
-    datetime: new Date(),
-    isRead: true,
-  },
-  {
-    subject: 'Email Subject',
-    sender: 'Sender',
-    content: dummyContent,
-    datetime: new Date(),
-    isRead: false,
-  },
-  {
-    subject: 'Email Subject 2',
-    sender: 'Sender 2',
-    content: dummyContent,
-    datetime: new Date(),
-    isRead: false,
-  },
-  {
-    subject: 'Email Subject 3',
-    sender: 'Sender 3',
-    content: dummyContent,
-    datetime: new Date(),
-    isRead: true,
-  },
-  {
-    subject: 'Email Subject',
-    sender: 'Sender',
-    content: dummyContent,
-    datetime: new Date(),
-    isRead: false,
-  },
-  {
-    subject: 'Email Subject 2',
-    sender: 'Sender 2',
-    content: dummyContent,
-    datetime: new Date(),
-    isRead: false,
-  },
-  {
-    subject: 'Email Subject 3',
-    sender: 'Sender 3',
-    content: dummyContent,
-    datetime: new Date(),
-    isRead: true,
-  },
-];
-
-const validType = ['inbox', 'sent'];
 
 class EmailList extends React.Component {
   state = {
@@ -219,34 +57,62 @@ class EmailList extends React.Component {
     page: 1,
   };
 
-  // fetchEmails = async () => {
-  //   const result = await fetch(`https://api.cryptmail.ml/api/mail?page=${this.state.page}`);
-  //   const data = await result.json();
-  //   this.setState({ isFetching: false, emails: [...this.state.emails, ...data], page: this.state.page + 1 });
-  // };
+  refresh = () => {
+    localStorage.clear();
+    this.setState({ emails: [], page: 1, isFetching: true }, () => {
+      this.fetchEmails();
+    });
+  }
 
-  fetchEmails = () => {
-    setTimeout(() => {
-      this.setState({ isFetching: false, emails: [...this.state.emails, ...dummyData], page: this.state.page + 1 });
-    }, 1000);
-  };
+  loadCache = () => {
+    // console.log('loadcache')
+    // console.log(this.props.type);
+      const cacheEmail = JSON.parse(localStorage.getItem(this.props.type));
+      const cachePage = parseInt(localStorage.getItem(`${this.props.type}Page`));
 
-  toggleDrawer = (open) => (event) => {
-    this.setState({ isDrawerOpen: open });
+      if (cacheEmail) {
+        this.setState({ isFetching: false, emails: [...this.state.emails, ...cacheEmail], page: cachePage });
+        return true;
+      } else {
+        return false;
+      }
+  }
+
+  fetchEmails = async () => {
+    const result = await fetch(`${config.API_URL}/api/${this.props.type}?page=${this.state.page}`,
+      {
+        method: 'GET',
+        credentials: 'include'
+      }
+    );
+
+    if (result.redirected) {
+      console.log('fail');
+    } else {
+
+      const data = await result.json();
+
+      this.setState({ isFetching: false, emails: [...this.state.emails, ...data.data], page: this.state.page + 1 },
+        () => {
+          localStorage.setItem(this.props.type, JSON.stringify(this.state.emails));
+          localStorage.setItem(`${this.props.type}Page`, this.state.page);
+        }
+      );
+    }
   };
 
   styledTitle = (title) => {
     return (
-      <Typography className={this.props.classes.title}>
+      <Typography noWrap>
         <b>{title}</b>
       </Typography>
     );
   };
 
-  styledDesc = (sender, content) => {
+  styledDesc = (subject) => {
     return (
-      <Typography variant="body2" noWrap>
-        <b>{sender}</b> - {content}
+      <Typography variant='body2' noWrap>
+        <b>{subject}</b>
       </Typography>
     );
   };
@@ -254,7 +120,7 @@ class EmailList extends React.Component {
   styledDate = (datetime) => {
     const formatted = formatToTimeZone(datetime, 'D MMM', { timeZone: 'Asia/Jakarta' });
     return (
-      <Typography noWrap variant="caption" className={this.props.classes.datetime}>
+      <Typography noWrap variant='caption' className={this.props.classes.datetime}>
         {formatted}
       </Typography>
     );
@@ -279,68 +145,74 @@ class EmailList extends React.Component {
 
   componentDidMount() {
     document.addEventListener('scroll', this.handleScroll);
-    this.fetchEmails();
+    if (!this.loadCache()) {
+        this.fetchEmails();
+    }
   }
-
+    
   componentWillUnmount() {
     document.removeEventListener('scroll', this.handleScroll);
   }
 
+  componentDidUpdate(prevProps) {
+    if (this.props.type !== prevProps.type) {
+      this.setState({ emails: [], page: 1, isFetching: true }, () => {
+        if (!this.loadCache()) {
+          this.fetchEmails();
+        }
+      });
+    }
+  }
+
   render() {
-    const { classes } = this.props;
-    const { type } = this.props.match.params;
+    const { classes, type } = this.props;
 
     const title = type.charAt(0).toUpperCase() + type.slice(1);
 
-    if (validType.includes(type)) {
-      return (
-        <React.Fragment>
-          <AppBar position="sticky">
-            <Toolbar>
-              <IconButton className={classes.menuButton} color="inherit" onClick={this.props.toggleDrawer(true)}>
-                <MenuIcon />
-              </IconButton>
+    return (
+      <React.Fragment>
+        <AppBar position='sticky'>
+          <Toolbar>
+            <IconButton className={classes.menuButton} color='inherit' onClick={this.props.toggleDrawer(true)}>
+              <MenuIcon />
+            </IconButton>
 
-              <Typography className={classes.grow} variant="h6">
-                {title}
-              </Typography>
+            <Typography className={classes.grow} variant='h6'>
+              {title}
+            </Typography>
 
-              <IconButton color="inherit">
-                <RefreshIcon />
-              </IconButton>
-            </Toolbar>
-          </AppBar>
-          <List>
-            {this.state.emails.map((email, index) => (
-              <ListItem
-                button
-                divider
-                className={clsx({ [classes.unread]: email.isRead })}
-                key={index}
-                onClick={() => this.readEmail(1)}
-              >
-                <ListItemText
-                  // primary={this.styledTitle(email.subject, email.datetime)}
-                  primary={this.styledTitle(email.subject, new Date())}
-                  // secondary={this.styledDesc(email.sender, email.message)}
-                  secondary={this.styledDesc(email.sender, email.content)}
-                />
-                <ListItemSecondaryAction className={classes.rightAligned}>
-                  {this.styledDate(email.datetime)}
-                </ListItemSecondaryAction>
-              </ListItem>
-            ))}
-          </List>
-          <Fab variant="extended" color="secondary" className={classes.fab} onClick={this.composeEmail}>
-            <MailIcon className={classes.extendedIcon} />
+            <IconButton color='inherit' onClick={this.refresh}>
+              <RefreshIcon />
+            </IconButton>
+          </Toolbar>
+        </AppBar>
+        <List>
+          {this.state.emails.map((email, index) => (
+            <ListItem
+              button
+              divider
+              className={clsx({ [classes.read]: email.read })}
+              key={index}
+              onClick={() => this.readEmail(email.id)}
+            >
+              <ListItemText
+                style={{ paddingRight: 12 }}
+                primary={this.styledTitle(email.sender)}
+                secondary={this.styledDesc(email.subject)}
+              />
+              <ListItemSecondaryAction className={classes.rightAligned}>
+                {this.styledDate(email.date)}
+              </ListItemSecondaryAction>
+            </ListItem>
+          ))}
+        </List>
+        <Fab variant='extended' color='secondary' className={classes.fab} onClick={this.composeEmail}>
+          <MailIcon className={classes.extendedIcon} />
             Compose
           </Fab>
-          {this.state.isFetching && <LinearProgress />}
-        </React.Fragment>
-      );
-    } else {
-      return <NotFound />;
-    }
+        {this.state.isFetching && <LinearProgress />}
+      </React.Fragment>
+    );
   }
 }
 

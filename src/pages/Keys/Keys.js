@@ -1,13 +1,14 @@
 import React, { useState } from 'react';
 import {
   List, ListItem, Button, ListItemText,
-  ListSubheader, Divider, TextField, ListItemSecondaryAction,
-  Typography, AppBar, Toolbar, IconButton, Fab
+  TextField, ListItemSecondaryAction,
+  Typography, AppBar, Toolbar, IconButton, Fab, CircularProgress
 } from '@material-ui/core';
+import { useSnackbar } from 'notistack';
 import MenuIcon from '@material-ui/icons/Menu';
 import SaveIcon from '@material-ui/icons/Save';
 import { makeStyles } from '@material-ui/core/styles';
-
+import config from '../../config';
 
 const styles = makeStyles({
   grow: {
@@ -21,10 +22,16 @@ const styles = makeStyles({
 });
 
 
-export default function DrawerList(props) {
+export default function Keys(props) {
+  const { enqueueSnackbar } = useSnackbar();
   const [disableFab, setDisableFab] = useState(true);
   const [encryptionKey, setEncryptionKey] = useState('');
-  const [signingKey, setSigningKey] = useState({ private: '', publik: '' });
+  const [signingKey, setSigningKey] = useState({ private: '', public: '' });
+  const [loading, setLoading] = useState({
+    generateSignKey: false,
+    saveSetting: false,
+    downloadSignKey: false,
+  })
 
   const classes = styles();
 
@@ -47,9 +54,24 @@ export default function DrawerList(props) {
     console.log('NOT IMPLEMENTED, upload signing key')
   }
 
-  const generateSigningKey = () => {
-    //TODO cal api to generate
-    console.log('NOT IMPLEMENTED, call generate signing key')
+  const generateSigningKey = async () => {
+
+    const response = await fetch(`${config.API_URL}/api/key/generate`, {
+      method: 'GET',
+      credentials: 'include',
+    })
+    if (response.status != 200) {
+    
+    }
+    
+    
+    
+    const data = await response.json();
+    setSigningKey({ private: data.privateKey, public: data.publicKey })
+    setLoading({ ...loading, generateSignKey: false })
+    enqueueSnackbar('Key generated', { variant: 'success' });
+    setDisableFab(false);
+    // console.log(data);
   }
 
   const generateRandomString = () => {
@@ -76,33 +98,14 @@ export default function DrawerList(props) {
         </Toolbar>
       </AppBar>
 
-      <List subheader={<ListSubheader>Encryption</ListSubheader>}>
+      <List>
         <ListItem>
-          <ListItemText primary='Set Up Encryption Key' />
+          <ListItemText primary='Set Up Signing Key' />
           <ListItemSecondaryAction>
-            <Button color='primary' variant="outlined" onClick={generateRandomString}>Generate</Button>
-          </ListItemSecondaryAction>
-        </ListItem>
-        <ListItem>
-          <TextField
-            fullWidth
-            margin='dense'
-            variant='outlined'
-            label='Encryption Key'
-            value={encryptionKey}
-            onChange={(event) => {
-              setDisableFab(false);
-              setEncryptionKey(event.target.value);
-            }}
-          />
-        </ListItem>
-      </List>
-      <Divider />
-      <List subheader={<ListSubheader>Signing</ListSubheader>}>
-        <ListItem>
-          <ListItemText primary='Set Up Singing Key' />
-          <ListItemSecondaryAction>
-            <Button color='primary' variant="outlined" onClick={generateSigningKey}>Generate</Button>
+            <Button color='primary' variant="outlined" onClick={() => {
+              setLoading({ ...loading, generateSignKey: true });
+              generateSigningKey()
+            }}>{loading.generateSignKey ? <CircularProgress size={24}/> : "Generate"}</Button>
           </ListItemSecondaryAction>
         </ListItem>
         <ListItem>
