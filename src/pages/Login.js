@@ -1,7 +1,7 @@
 import React from 'react';
-import Auth from '../utils/Auth';
 import { Button, Typography } from '@material-ui/core';
 import { makeStyles } from '@material-ui/core/styles';
+import config from '../config';
 
 const styles = makeStyles({
   grow: {
@@ -20,7 +20,6 @@ const styles = makeStyles({
     flexDirection: 'column',
   },
   googleIconContainer: {
-    backgroundColor: '#fff',
     margin: 2,
     marginRight: 12,
     padding: 12,
@@ -43,7 +42,6 @@ const styles = makeStyles({
 
 export const Login = (props) => {
   const classes = styles();
-  console.log('login')
   return (
     <div>
       <div className={classes.mainBody}>
@@ -54,12 +52,9 @@ export const Login = (props) => {
         <Typography>Please Sign In to Continue</Typography>
         <br />
         <Button
-          onClick={() => {
-            Auth.login(() => { props.history.push('/') });
-          }}
+          href={`${config.API_URL}/api/oauth2/authorization/google`}
           variant='outlined'
           className={classes.signInButton}
-          component='span'
         >
           <div className={classes.googleIconContainer}>
             <img

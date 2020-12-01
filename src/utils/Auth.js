@@ -1,25 +1,40 @@
 //singleton class for authentication
 //callback passed as parameter in case of an asynchronous implementation
+import config from '../config';
 
 class Auth {
-    constructor() {
-        this.authenticated = false;
-    }
+  constructor() {
+    this.authenticated = true;
+    this.data = null;
+  }
 
-    login(callback) {
-        //replace with login mechanism
-        this.authenticated = true;
-        callback();
-    }
+  setAuthenticated(status) {
+    this.authenticated = status;
+  }
 
-    logout(callback) {
-        this.authenticated = false;
-        callback();
-    }
+  setData(data) {
+    this.data = data;
+  }
 
-    isAuthenticated(){
-        return this.authenticated;
-    }
+  login(callback) {
+    //replace with login mechanism
+    this.authenticated = true;
+    callback();
+  }
+
+  logout(callback) {
+    document.cookie = ""
+    this.authenticated = false;
+    callback();
+  }
+
+  getData() {
+    return this.data;
+  }
+
+  isAuthenticated() {
+    return this.authenticated;
+  }
 }
 
 export default new Auth();

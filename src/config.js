@@ -1,3 +1,5 @@
-export default config = {
-  API_URL: 'http://api.cryptmail.ml'
+const config = {
+  API_URL: 'https://api.cryptmail.ml'
 }
+
+export default config;
