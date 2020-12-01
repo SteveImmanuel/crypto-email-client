@@ -46,7 +46,8 @@ export default function Compose(props) {
   });
 
 
-  const send = async () => {
+  const send = async (event) => {
+    event.preventDefault();
     console.log(email);
     // const response = await fetch(`${config.API_URL}/api/auth/user`,
     //   {
