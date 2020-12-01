@@ -220,11 +220,9 @@ class EmailList extends React.Component {
   };
 
   // fetchEmails = async () => {
-  //   setTimeout(async () => {
-  //     const result = await fetch(`https://api.cryptmail.ml/api/mail?page=${this.state.page}`);
-  //     const data = await result.json();
-  //     this.setState({ isFetching: false, emails: [...this.state.emails, ...data], page: this.state.page + 1 });
-  //   }, 5000);
+  //   const result = await fetch(`https://api.cryptmail.ml/api/mail?page=${this.state.page}`);
+  //   const data = await result.json();
+  //   this.setState({ isFetching: false, emails: [...this.state.emails, ...data], page: this.state.page + 1 });
   // };
 
   fetchEmails = () => {
@@ -271,18 +269,7 @@ class EmailList extends React.Component {
   };
 
   handleScroll = () => {
-    const windowHeight = 'innerHeight' in window ? window.innerHeight : document.documentElement.offsetHeight;
-    const body = document.body;
-    const html = document.documentElement;
-    const docHeight = Math.max(
-      body.scrollHeight,
-      body.offsetHeight,
-      html.clientHeight,
-      html.scrollHeight,
-      html.offsetHeight
-    );
-    const windowBottom = windowHeight + window.pageYOffset;
-    if (Math.ceil(windowBottom) >= docHeight && !this.state.isFetching) {
+    if (Math.ceil(window.innerHeight + window.scrollY) >= document.body.offsetHeight && !this.state.isFetching) {
       this.setState({
         isFetching: true,
       });
