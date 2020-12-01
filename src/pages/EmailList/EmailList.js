@@ -219,6 +219,14 @@ class EmailList extends React.Component {
     page: 1,
   };
 
+  // fetchEmails = async () => {
+  //   setTimeout(async () => {
+  //     const result = await fetch(`https://api.cryptmail.ml/api/mail?page=${this.state.page}`);
+  //     const data = await result.json();
+  //     this.setState({ isFetching: false, emails: [...this.state.emails, ...data], page: this.state.page + 1 });
+  //   }, 5000);
+  // };
+
   fetchEmails = () => {
     setTimeout(() => {
       this.setState({ isFetching: false, emails: [...this.state.emails, ...dummyData], page: this.state.page + 1 });
@@ -274,7 +282,7 @@ class EmailList extends React.Component {
       html.offsetHeight
     );
     const windowBottom = windowHeight + window.pageYOffset;
-    if (windowBottom >= docHeight && !this.state.isFetching) {
+    if (Math.ceil(windowBottom) >= docHeight && !this.state.isFetching) {
       this.setState({
         isFetching: true,
       });
@@ -325,7 +333,9 @@ class EmailList extends React.Component {
                 onClick={() => this.readEmail(1)}
               >
                 <ListItemText
-                  primary={this.styledTitle(email.subject, email.datetime)}
+                  // primary={this.styledTitle(email.subject, email.datetime)}
+                  primary={this.styledTitle(email.subject, new Date())}
+                  // secondary={this.styledDesc(email.sender, email.message)}
                   secondary={this.styledDesc(email.sender, email.content)}
                 />
                 <ListItemSecondaryAction className={classes.rightAligned}>
