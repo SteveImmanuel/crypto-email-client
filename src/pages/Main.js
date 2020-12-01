@@ -7,6 +7,7 @@ import Keys from './Keys/Keys';
 import Compose from './Compose/Compose';
 import DrawerList from './Drawer/DrawerList';
 import { NotFound } from './NotFound';
+import Auth from '../utils/Auth';
 
 class Main extends React.Component {
   state = {
@@ -19,17 +20,21 @@ class Main extends React.Component {
     this.setState({ isDrawerOpen: open });
   };
 
+  logout = () => {
+      Auth.logout(() => { this.props.history.push('/login') });
+  }
+
   render() {
 
     return (
       <React.Fragment>
         <Drawer anchor='left' open={this.state.isDrawerOpen} onClose={this.toggleDrawer(false)}>
-          <DrawerList toggleDrawer={this.toggleDrawer} />
+          <DrawerList toggleDrawer={this.toggleDrawer} logout={this.logout}/>
         </Drawer>
 
         <Switch>
           <Route exact path={`${this.props.match.path}`}>
-            <Redirect to={`${this.props.match.path}/keys`} />
+            <Redirect to={`${this.props.match.path}/list/inbox`} />
           </Route>
           <Route path={`${this.props.match.path}/list/:type`} render={(props) => <EmailList {...props} toggleDrawer={this.toggleDrawer} />} />
           <Route path={`${this.props.match.path}/compose`} render={(props) => <Compose {...props} />} />

@@ -59,7 +59,7 @@ export default function DrawerList(props) {
       </List>
       <Divider />
       <List subheader={<ListSubheader>Account</ListSubheader>}>
-        <ListItem button>
+        <ListItem button onClick={props.logout}>
           <ListItemIcon><MeetingRoomIcon /></ListItemIcon>
           <ListItemText primary='Logout' />
         </ListItem>
