@@ -56,7 +56,7 @@ export default function DrawerList(props) {
       <List subheader={<ListSubheader>PGP</ListSubheader>}>
         <ListItem button onClick={() => { history.push('/app/keys') }}>
           <ListItemIcon><VpnKeyIcon /></ListItemIcon>
-          <ListItemText primary='Keys Settings' />
+          <ListItemText primary='Keys' />
         </ListItem>
       </List>
       <Divider />

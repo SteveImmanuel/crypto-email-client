@@ -25,7 +25,6 @@ const styles = makeStyles({
 export default function Keys(props) {
   const { enqueueSnackbar } = useSnackbar();
   const [disableFab, setDisableFab] = useState(true);
-  const [encryptionKey, setEncryptionKey] = useState('');
   const [signingKey, setSigningKey] = useState({ private: '', public: '' });
   const [loading, setLoading] = useState({
     generateSignKey: false,
@@ -35,23 +34,40 @@ export default function Keys(props) {
 
   const classes = styles();
 
-  const back = () => {
-    props.history.goBack();
-  }
-
   const saveSettings = () => {
     //TODO upload settings to server
     console.log('NOT IMPLEMENTED, save settings')
   }
 
-  const downloadSigningKey = () => {
-    //TODO download from server
-    console.log('NOT IMPLEMENTED, download signing key')
+  const exportKey = () => {
+    const element = document.createElement('a');
+    const file = new Blob([`${signingKey.private}:${signingKey.public}`], { type: 'text/plain' });
+    element.href = URL.createObjectURL(file);
+    element.download = 'signature.key';
+    document.body.appendChild(element);
+    element.click();
   }
 
-  const uploadSigningKey = () => {
-    //TODO choose file, then parse to text
-    console.log('NOT IMPLEMENTED, upload signing key')
+  const importKey = (event) => {
+    let file = event.target.files[0];
+    if (!file) {
+      return
+    }
+
+    var reader = new FileReader();
+    reader.readAsText(file, 'UTF-8');
+    reader.onload = (evt) => {
+      let key = evt.target.result.split(':');
+      if (key.length !== 2) {
+        enqueueSnackbar('Error reading key', { variant: 'error' });
+        return
+      }
+      setSigningKey({ private: key[0], public: key[1] });
+      setDisableFab(false);
+    }
+    reader.onerror = () => {
+      enqueueSnackbar('Error reading key', { variant: 'error' });
+    }
   }
 
   const generateSigningKey = async () => {
@@ -60,29 +76,18 @@ export default function Keys(props) {
       method: 'GET',
       credentials: 'include',
     })
-    if (response.status != 200) {
-    
+    if (response.status !== 200) {
+      enqueueSnackbar('Error generate key', { variant: 'error' });
     }
-    
-    
-    
+
+
+
     const data = await response.json();
     setSigningKey({ private: data.privateKey, public: data.publicKey })
     setLoading({ ...loading, generateSignKey: false })
     enqueueSnackbar('Key generated', { variant: 'success' });
     setDisableFab(false);
     // console.log(data);
-  }
-
-  const generateRandomString = () => {
-    let text = "";
-    let possible = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz";
-
-    for (let i = 0; i < 10; i++)
-      text += possible.charAt(Math.floor(Math.random() * possible.length));
-
-    setEncryptionKey(text);
-    setDisableFab(false);
   }
 
   return (
@@ -102,10 +107,10 @@ export default function Keys(props) {
         <ListItem>
           <ListItemText primary='Set Up Signing Key' />
           <ListItemSecondaryAction>
-            <Button color='primary' variant="outlined" onClick={() => {
+            <Button color='primary' variant='outlined' onClick={() => {
               setLoading({ ...loading, generateSignKey: true });
               generateSigningKey()
-            }}>{loading.generateSignKey ? <CircularProgress size={24}/> : "Generate"}</Button>
+            }}>{loading.generateSignKey ? <CircularProgress size={24} /> : 'Generate'}</Button>
           </ListItemSecondaryAction>
         </ListItem>
         <ListItem>
@@ -139,8 +144,13 @@ export default function Keys(props) {
           />
         </ListItem>
         <ListItem>
-          <Button color='primary' variant="outlined" onClick={uploadSigningKey} style={{ marginRight: 12 }}>Upload</Button>
-          <Button color='primary' variant="outlined" onClick={downloadSigningKey}>Download</Button>
+          <Button color='primary' variant='outlined'
+            component='label'
+            style={{ marginRight: 12 }}>
+            <input accept='.key' type='file' hidden onChange={importKey}/>
+            Import
+            </Button>
+          <Button color='primary' variant='outlined' onClick={exportKey}>Export</Button>
         </ListItem>
       </List>
       <Fab color='secondary' disabled={disableFab} className={classes.fab} onClick={saveSettings}>
