@@ -46,7 +46,7 @@ export const Login = (props) => {
     <div>
       <div className={classes.mainBody}>
         <Typography align='center' variant='h6' className={classes.titleSection}>
-          <img className={classes.titleLogo} src='cryptMailLogo.jpg' alt='cryptMailLogo' height='42px' />
+          <img className={classes.titleLogo} src={`${process.env.PUBLIC_URL}/cryptMailLogo.jpg`} alt='cryptMailLogo' height='42px' />
           CryptMail
         </Typography>
         <Typography>Please Sign In to Continue</Typography>
