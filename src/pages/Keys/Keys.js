@@ -80,8 +80,6 @@ export default function Keys(props) {
       enqueueSnackbar('Error generate key', { variant: 'error' });
     }
 
-
-
     const data = await response.json();
     setSigningKey({ private: data.data.privateKey, public: data.data.publicKey })
     setLoading({ ...loading, generateSignKey: false })
@@ -98,7 +96,7 @@ export default function Keys(props) {
             <MenuIcon />
           </IconButton>
 
-          <Typography className={classes.grow} variant='h6'>Keys Settings</Typography>
+          <Typography className={classes.grow} variant='h6'>Keys</Typography>
 
         </Toolbar>
       </AppBar>
@@ -107,7 +105,7 @@ export default function Keys(props) {
         <ListItem>
           <ListItemText primary='Set Up Signing Key' />
           <ListItemSecondaryAction>
-            <Button color='primary' variant='outlined' onClick={() => {
+            <Button color='primary' variant='outlined' disabled={loading.generateSignKey} onClick={() => {
               setLoading({ ...loading, generateSignKey: true });
               generateSigningKey()
             }}>{loading.generateSignKey ? <CircularProgress size={24} /> : 'Generate'}</Button>
