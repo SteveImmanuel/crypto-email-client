@@ -27,8 +27,11 @@ const styles = makeStyles({
   },
   content: {
     marginTop: 10,
+    overflow: 'auto',
+  },
+  contentText : {
     whiteSpace: 'pre-line',
-    overflowWrap: 'break-word'
+    overflowWrap: 'break-word',
   },
   grow: {
     flexGrow: 1
@@ -208,9 +211,14 @@ export default function Read(props) {
           </Card>
           <Card className={classes.content}>
             <CardContent>
-              {/* <Typography variant='body2' className={classes.content}> */}
-                <div dangerouslySetInnerHTML={{__html: email.html || email.show }} className={classes.content}/>
-              {/* </Typography> */}
+              {email.html ? 
+                <div dangerouslySetInnerHTML={{__html: email.html || email.show }}/> :
+
+              <Typography variant='body2' className={classes.contentText}>
+                {email.show}
+              </Typography>
+
+            }
             </CardContent>
           </Card>
 
