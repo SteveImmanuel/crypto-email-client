@@ -118,12 +118,15 @@ export default function Keys(props) {
 
     if (response.status !== 200) {
       enqueueSnackbar('Error get key', { variant: 'error' });
+      setSigningKey({ ...signingKey, initial: false });
+    } else {
+      console.log('200');
+      const data = await response.json();
+      setSigningKey({ private: data.data.privateKey, public: data.data.publicKey, initial: false });
     }
 
-    const data = await response.json();
-
-    setSigningKey({ private: data.data.privateKey, public: data.data.publicKey, initial: false });
     setLoading({ ...loading, generateSignKey: false });
+
   }
 
   useEffect(() => {
