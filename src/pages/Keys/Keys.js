@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import {
   List, ListItem, Button, ListItemText,
   TextField, ListItemSecondaryAction,
@@ -25,18 +25,40 @@ const styles = makeStyles({
 export default function Keys(props) {
   const { enqueueSnackbar } = useSnackbar();
   const [disableFab, setDisableFab] = useState(true);
-  const [signingKey, setSigningKey] = useState({ private: '', public: '' });
+  const [signingKey, setSigningKey] = useState({ private: '', public: '', initial: true });
   const [loading, setLoading] = useState({
-    generateSignKey: false,
+    generateSignKey: true,
     saveSetting: false,
     downloadSignKey: false,
   })
 
   const classes = styles();
 
-  const saveSettings = () => {
-    //TODO upload settings to server
-    console.log('NOT IMPLEMENTED, save settings')
+  const saveSettings = async () => {
+    setLoading({ ...loading, saveSetting: true })
+
+    const response = await fetch(`${config.API_URL}/api/key/save`,
+      {
+        method: 'POST',
+        credentials: 'include',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+          privateKey: signingKey.private,
+          publicKey: signingKey.public
+        })
+      }
+    )
+
+    if (response.status !== 200) {
+      enqueueSnackbar('Fail to save keys', { variant: 'error' });
+    } else {
+      enqueueSnackbar('Key saved', { variant: 'success' });
+    }
+    setDisableFab(true);
+    setLoading({ ...loading, saveSetting: false });
+
   }
 
   const exportKey = () => {
@@ -85,8 +107,29 @@ export default function Keys(props) {
     setLoading({ ...loading, generateSignKey: false })
     enqueueSnackbar('Key generated', { variant: 'success' });
     setDisableFab(false);
-    // console.log(data);
   }
+
+  const fetchKey = async () => {
+    const response = await fetch(`${config.API_URL}/api/key`, {
+      method: 'GET',
+      credentials: 'include',
+    })
+
+    if (response.status !== 200) {
+      enqueueSnackbar('Error get key', { variant: 'error' });
+    }
+
+    const data = await response.json();
+
+    setSigningKey({ private: data.data.privateKey, public: data.data.publicKey, initial: false });
+    setLoading({ ...loading, generateSignKey: false });
+  }
+
+  useEffect(() => {
+    if (signingKey.initial) {
+      fetchKey();
+    }
+  })
 
   return (
     <div>
@@ -101,59 +144,67 @@ export default function Keys(props) {
         </Toolbar>
       </AppBar>
 
+        <form onSubmit={saveSettings}>
       <List>
-        <ListItem>
-          <ListItemText primary='Set Up Signing Key' />
-          <ListItemSecondaryAction>
-            <Button color='primary' variant='outlined' disabled={loading.generateSignKey} onClick={() => {
-              setLoading({ ...loading, generateSignKey: true });
-              generateSigningKey()
-            }}>{loading.generateSignKey ? <CircularProgress size={24} /> : 'Generate'}</Button>
-          </ListItemSecondaryAction>
-        </ListItem>
-        <ListItem>
-          <TextField
-            fullWidth
-            multiline
-            rows='10'
-            margin='dense'
-            variant='outlined'
-            label='Private Key'
-            value={signingKey.private}
-            onChange={(event) => {
-              setDisableFab(false);
-              setSigningKey({ ...signingKey, private: event.target.value });
-            }}
-          />
-        </ListItem>
-        <ListItem>
-          <TextField
-            fullWidth
-            multiline
-            rows='10'
-            margin='dense'
-            variant='outlined'
-            label='Public Key'
-            value={signingKey.public}
-            onChange={(event) => {
-              setDisableFab(false);
-              setSigningKey({ ...signingKey, public: event.target.value });
-            }}
-          />
-        </ListItem>
-        <ListItem>
-          <Button color='primary' variant='outlined'
-            component='label'
-            style={{ marginRight: 12 }}>
-            <input accept='.key' type='file' hidden onChange={importKey}/>
+
+          <ListItem>
+            <ListItemText primary='Set Up Signing Key' />
+            <ListItemSecondaryAction>
+              <Button color='primary' variant='outlined' disabled={loading.generateSignKey} onClick={() => {
+                setLoading({ ...loading, generateSignKey: true });
+                generateSigningKey()
+              }}>{loading.generateSignKey ? <CircularProgress size={24} /> : 'Generate'}</Button>
+            </ListItemSecondaryAction>
+          </ListItem>
+          <ListItem>
+            <TextField
+              fullWidth
+              multiline
+              required
+              disabled={loading.generateSignKey}
+              rows='10'
+              margin='dense'
+              variant='outlined'
+              label='Private Key'
+              value={signingKey.private}
+              onChange={(event) => {
+                setDisableFab(false);
+                setSigningKey({ ...signingKey, private: event.target.value });
+              }}
+            />
+          </ListItem>
+          <ListItem>
+            <TextField
+              fullWidth
+              multiline
+              required
+              disabled={loading.generateSignKey}
+              rows='10'
+              margin='dense'
+              variant='outlined'
+              label='Public Key'
+              value={signingKey.public}
+              onChange={(event) => {
+                setDisableFab(false);
+                setSigningKey({ ...signingKey, public: event.target.value });
+              }}
+            />
+          </ListItem>
+          <ListItem>
+            <Button color='primary' variant='outlined'
+              component='label'
+              style={{ marginRight: 12 }}>
+              <input accept='.key' type='file' hidden value='' onChange={importKey} />
             Import
             </Button>
-          <Button color='primary' variant='outlined' onClick={exportKey}>Export</Button>
-        </ListItem>
+            <Button color='primary' variant='outlined' onClick={exportKey}>Export</Button>
+          </ListItem>
+
       </List>
-      <Fab color='secondary' disabled={disableFab} className={classes.fab} onClick={saveSettings}>
-        <SaveIcon />
+      <Fab color='secondary' disabled={disableFab} className={classes.fab} type='submit'>
+        {loading.saveSetting ? <CircularProgress size={20} /> : <SaveIcon />}
       </Fab>
+      </form>
     </div>
   );
 }
