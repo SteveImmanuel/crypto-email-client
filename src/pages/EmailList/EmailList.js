@@ -130,7 +130,14 @@ class EmailList extends React.Component {
     );
   };
 
-  readEmail = (id) => {
+  readEmail = (id, index) => {
+    let cacheEmail = JSON.parse(localStorage.getItem(this.props.type));
+
+    if (cacheEmail) {
+      cacheEmail[index].read = true
+      localStorage.setItem(this.props.type, JSON.stringify(cacheEmail));
+    }
+
     this.props.history.push(`/app/read/${id}`);
   };
 
@@ -197,7 +204,9 @@ class EmailList extends React.Component {
               divider
               className={clsx({ [classes.read]: email.read })}
               key={index}
-              onClick={() => this.readEmail(email.id)}
+              onClick={() => {
+                this.readEmail(email.id, index);
+              }}
             >
               <ListItemText
                 style={{ paddingRight: 12 }}
