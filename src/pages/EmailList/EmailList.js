@@ -15,6 +15,7 @@ import {
 import { fade } from '@material-ui/core/styles/colorManipulator';
 import { formatToTimeZone } from 'date-fns-timezone';
 import { withStyles } from '@material-ui/core/styles';
+import { withSnackbar } from 'notistack';
 import MenuIcon from '@material-ui/icons/Menu';
 import MailIcon from '@material-ui/icons/Mail';
 import RefreshIcon from '@material-ui/icons/Refresh';
@@ -65,17 +66,15 @@ class EmailList extends React.Component {
   }
 
   loadCache = () => {
-    // console.log('loadcache')
-    // console.log(this.props.type);
-      const cacheEmail = JSON.parse(localStorage.getItem(this.props.type));
-      const cachePage = parseInt(localStorage.getItem(`${this.props.type}Page`));
+    const cacheEmail = JSON.parse(localStorage.getItem(this.props.type));
+    const cachePage = parseInt(localStorage.getItem(`${this.props.type}Page`));
 
-      if (cacheEmail) {
-        this.setState({ isFetching: false, emails: [...this.state.emails, ...cacheEmail], page: cachePage });
-        return true;
-      } else {
-        return false;
-      }
+    if (cacheEmail) {
+      this.setState({ isFetching: false, emails: [...this.state.emails, ...cacheEmail], page: cachePage });
+      return true;
+    } else {
+      return false;
+    }
   }
 
   fetchEmails = async () => {
@@ -86,18 +85,23 @@ class EmailList extends React.Component {
       }
     );
 
-    if (result.redirected) {
-      console.log('fail');
-    } else {
-
+    if (result.status === 200) {
       const data = await result.json();
 
-      this.setState({ isFetching: false, emails: [...this.state.emails, ...data.data], page: this.state.page + 1 },
-        () => {
-          localStorage.setItem(this.props.type, JSON.stringify(this.state.emails));
-          localStorage.setItem(`${this.props.type}Page`, this.state.page);
-        }
-      );
+      if (data.code === 500) {
+        this.setState({ isFetching: false, emails: [], page: 1 });
+        this.props.enqueueSnackbar('Failed fetching emails', { variant: 'error' });
+      } else {
+        this.setState({ isFetching: false, emails: [...this.state.emails, ...data.data], page: this.state.page + 1 },
+          () => {
+            localStorage.setItem(this.props.type, JSON.stringify(this.state.emails));
+            localStorage.setItem(`${this.props.type}Page`, this.state.page);
+          }
+        );
+      }
+
+    } else {
+
     }
   };
 
@@ -146,10 +150,10 @@ class EmailList extends React.Component {
   componentDidMount() {
     document.addEventListener('scroll', this.handleScroll);
     if (!this.loadCache()) {
-        this.fetchEmails();
+      this.fetchEmails();
     }
   }
-    
+
   componentWillUnmount() {
     document.removeEventListener('scroll', this.handleScroll);
   }
@@ -216,4 +220,4 @@ class EmailList extends React.Component {
   }
 }
 
-export default withStyles(styles)(EmailList);
+export default withSnackbar(withStyles(styles)(EmailList));
