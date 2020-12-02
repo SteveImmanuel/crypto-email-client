@@ -8,7 +8,6 @@ import KeyboardBackspaceIcon from '@material-ui/icons/KeyboardBackspace';
 import CheckCircleIcon from '@material-ui/icons/CheckCircle';
 import LockOpenIcon from '@material-ui/icons/LockOpen';
 import config from '../../config';
-import Auth from '../../utils/Auth';
 
 
 const styles = makeStyles({
@@ -27,7 +26,9 @@ const styles = makeStyles({
     paddingRight: 10
   },
   content: {
-    marginTop: 10
+    marginTop: 10,
+    whiteSpace: 'pre-line',
+    overflowWrap: 'break-word'
   },
   grow: {
     flexGrow: 1
@@ -41,10 +42,10 @@ export default function Read(props) {
   const classes = styles();
   const [email, setEmail] = useState({});
   const [isDialogOpen, setIsDialogOpen] = useState(false);
+  const [loading, setLoading] = useState(true)
   const [key, setKey] = React.useState('');
   const { enqueueSnackbar } = useSnackbar();
   const { id } = props.match.params;
-  const { email: userEmail } = Auth.getData();
 
 
   const back = () => {
@@ -58,7 +59,11 @@ export default function Read(props) {
 
     if (!result.redirected) {
       const data = await result.json();
-      setEmail(data);
+      console.log(data);
+      // let show = document.createElement('div');
+      // show.innerHTML = data.message;
+      setEmail({ ...data, show: data.message });
+      setLoading(false);
     }
   }
 
@@ -67,21 +72,70 @@ export default function Read(props) {
     return formatToTimeZone(datetime, 'D MMM YYYY, HH:mm', { timeZone: 'Asia/Jakarta' });
   };
 
-  const verify = () => {
-    console.log('NOT IMPLEMENTED, verify')
-    enqueueSnackbar('Verified', { variant: 'success' });
+  const verify = async () => {
+    console.log({
+      msg: email.message,
+      senderEmail: email.sender
+    })
+    const response = await fetch(`${config.API_URL}/api/sign/verify`, {
+      method: 'POST',
+      credentials: 'include',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({
+        msg: email.message,
+        senderEmail: email.sender
+      })
+    })
+    if (response.status !== 200) {
+      enqueueSnackbar('Error verifying message', { variant: 'error' });
+    } else {
+      const data = await response.json();
+      console.log(data)
+      if (data.data.verified) {
+        enqueueSnackbar('Email verified', { variant: 'success' });
+      } else {
+        enqueueSnackbar('Email not verified', { variant: 'warning' });
+      }
+    }
+
+    setLoading(false);
   }
 
-  const decrypt = () => {
+  const openDialog = () => {
     setIsDialogOpen(true);
+  }
+
+  const decrypt = async () => {
+    const response = await fetch(`${config.API_URL}/api/decrypt`, {
+      method: 'POST',
+      credentials: 'include',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({
+        content: email.message,
+        key: key
+      })
+    })
+
+    if (response.status !== 200) {
+      enqueueSnackbar('Error decrypting message', { variant: 'error' });
+    } else {
+      const data = await response.json();
+      console.log(data)
+      setEmail({ ...email, show: data.data });
+      enqueueSnackbar('Email decrypted', { variant: 'success' });
+    }
+    setLoading(false);
   }
 
   const handleClose = (value) => {
     setIsDialogOpen(false);
     if (value.action === 'submit' && key.length > 0) {
-      // TODO decrypt
-      console.log(key);
-      console.log('NOT IMPLEMENTED, decrypt')
+      setLoading(true);
+      decrypt();
     }
   };
 
@@ -105,15 +159,27 @@ export default function Read(props) {
 
           <Typography className={classes.grow} variant='h6'>View</Typography>
 
-          <IconButton color='inherit' onClick={verify}>
+          <IconButton
+            color='inherit'
+            onClick={() => {
+              setLoading(true);
+              verify();
+            }}
+            disabled={loading}
+          >
             <CheckCircleIcon />
           </IconButton>
-          <IconButton color='inherit' onClick={decrypt}>
+          <IconButton
+            color='inherit'
+            onClick={openDialog}
+            disabled={loading}
+          >
             <LockOpenIcon />
           </IconButton>
         </Toolbar>
       </AppBar>
-      {Object.keys(email).length === 0 ? <LinearProgress /> :
+      {loading && <LinearProgress />}
+      {Object.keys(email).length !== 0 &&
         <div className={classes.container}>
           <Card>
             <CardContent>
@@ -130,7 +196,7 @@ export default function Read(props) {
                   </tr>
                   <tr>
                     <td className={classes.detailKey}>To</td>
-                    <td >{userEmail}</td>
+                    <td >{email.receiver}</td>
                   </tr>
                   <tr>
                     <td className={classes.detailKey}>Date</td>
@@ -142,9 +208,9 @@ export default function Read(props) {
           </Card>
           <Card className={classes.content}>
             <CardContent>
-              <Typography variant='body2' className={classes.content}>
-                {email.message}
-              </Typography>
+              {/* <Typography variant='body2' className={classes.content}> */}
+                <div dangerouslySetInnerHTML={{__html: email.html || email.show }} className={classes.content}/>
+              {/* </Typography> */}
             </CardContent>
           </Card>
 
