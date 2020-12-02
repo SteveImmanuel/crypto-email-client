@@ -1,6 +1,5 @@
 //singleton class for authentication
 //callback passed as parameter in case of an asynchronous implementation
-import config from '../config';
 
 class Auth {
   constructor() {
@@ -17,13 +16,11 @@ class Auth {
   }
 
   login(callback) {
-    //replace with login mechanism
     this.authenticated = true;
     callback();
   }
 
   logout(callback) {
-    document.cookie = ""
     this.authenticated = false;
     callback();
   }

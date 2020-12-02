@@ -1,8 +1,11 @@
 import React, { useState } from 'react';
 import { fade } from '@material-ui/core/styles/colorManipulator';
-import { TextField, Checkbox, FormControlLabel, FormGroup, AppBar, Toolbar, IconButton, Typography, Button } from '@material-ui/core';
+import { TextField, Checkbox, FormControlLabel, FormGroup, AppBar, Toolbar, IconButton, Typography, Button, CircularProgress } from '@material-ui/core';
 import { makeStyles } from '@material-ui/core/styles';
+import { useSnackbar } from 'notistack';
 import KeyboardBackspaceIcon from '@material-ui/icons/KeyboardBackspace';
+import config from '../../config';
+
 
 const styles = makeStyles({
   list: {
@@ -44,21 +47,28 @@ export default function Compose(props) {
     encrypted: false,
     key: '',
   });
+  const [isSending, setIsSending] = useState(false);
+  const { enqueueSnackbar } = useSnackbar();
 
 
   const send = async (event) => {
     event.preventDefault();
+    setIsSending(true);
     console.log(email);
-    // const response = await fetch(`${config.API_URL}/api/auth/user`,
-    //   {
-    //     method: 'POST',
-    //     headers: {
-    //       'Content-Type': 'application/json'
-    //     },
-    //     credentials: 'include',
-    //     body: JSON.stringify(email)
-    //   }
-    // )
+    const response = await fetch(`${config.API_URL}/api/mail`,
+      {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        credentials: 'include',
+        body: JSON.stringify(email)
+      }
+    )
+    const result = await response.json();
+    console.log(result);
+    setIsSending(false);
+
   }
 
   const back = () => {
@@ -144,7 +154,9 @@ export default function Compose(props) {
             value={email.content}
             onChange={(event) => { setEmail({ ...email, content: event.target.value }) }}
           />
-          <Button type="submit" color="primary" variant='outlined' style={{ display: 'flex', marginLeft: 'auto' }}>Send</Button>
+          <Button type="submit" color="primary" variant='outlined' style={{ display: 'flex', marginLeft: 'auto' }}>
+            {isSending ? <CircularProgress size={20}/> : 'Send'}
+          </Button>
         </div>
       </form>
 

@@ -115,8 +115,12 @@ export default function Read(props) {
       </AppBar>
       {Object.keys(email).length === 0 ? <LinearProgress /> :
         <div className={classes.container}>
-          <Typography gutterBottom variant='h6'>{email.subject}</Typography>
           <Card>
+            <CardContent>
+              <Typography variant='h6'>{email.subject}</Typography>
+            </CardContent>
+          </Card>
+          <Card className={classes.content}>
             <CardContent>
               <table>
                 <tbody>
