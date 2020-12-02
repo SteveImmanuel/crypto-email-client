@@ -166,7 +166,7 @@ export default function Read(props) {
             <KeyboardBackspaceIcon />
           </IconButton>
 
-          <Typography className={classes.grow} variant='h6'>View</Typography>
+          <Typography className={classes.grow} variant='h6'>Read</Typography>
 
           <IconButton
             color='inherit'
