@@ -9,6 +9,7 @@ import { CssBaseline } from '@material-ui/core';
 import config from './config';
 import Auth from './utils/Auth';
 import Main from './pages/Main';
+const axios = require('axios');
 
 class App extends React.Component {
   state = {
@@ -17,19 +18,16 @@ class App extends React.Component {
 
   getUserData = async () => {
     try {
-
-      const response = await fetch(`${config.API_URL}/api/auth/user`,
+      const response = await axios.get(`${config.API_URL}/api/auth/user`, 
         {
-          method: 'GET',
-          // headers: {
-          //   "X-Requested-With": "XMLHttpRequest"
-          // },
-          credentials: 'include'
-        }
-      )
+          headers: {
+            "X-Requested-With": "XMLHttpRequest"
+          }, 
+          withCredentials: true
+        })
 
       if (response.status === 200) {
-        const data = await response.json();
+        const data = response.data;
         Auth.setAuthenticated(true);
         Auth.setData(data);
         this.setState({ isLoading: false });
