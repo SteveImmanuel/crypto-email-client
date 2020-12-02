@@ -131,7 +131,7 @@ class EmailList extends React.Component {
   };
 
   readEmail = (id, index) => {
-    let cacheEmail = JSON.parse(localStorage.getItem(this.props.type));
+    let cacheEmail = this.state.emails;
 
     if (cacheEmail) {
       cacheEmail[index].read = true
