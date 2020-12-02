@@ -43,8 +43,8 @@ export default function Compose(props) {
     to: '',
     subject: '',
     content: '',
-    signed: false,
-    encrypted: false,
+    sign: false,
+    encrypt: false,
     key: '',
   });
   const [isSending, setIsSending] = useState(false);
@@ -54,21 +54,29 @@ export default function Compose(props) {
   const send = async (event) => {
     event.preventDefault();
     setIsSending(true);
-    console.log(email);
+    
     const response = await fetch(`${config.API_URL}/api/mail`,
       {
         method: 'POST',
+        credentials: 'include',
         headers: {
           'Content-Type': 'application/json'
         },
-        credentials: 'include',
         body: JSON.stringify(email)
       }
     )
-    const result = await response.json();
-    console.log(result);
+    
     setIsSending(false);
 
+    let msg;
+    if (response.status !== 200) {
+      msg = { value: 'Failed to sent email', variant: 'error' };
+    } else {
+      msg = { value: 'Email sent successfully', variant: 'success' };
+      props.history.push('/');
+    }
+
+    enqueueSnackbar(msg.value, { variant: msg.variant });
   }
 
   const back = () => {
@@ -118,11 +126,11 @@ export default function Compose(props) {
           <FormGroup>
             <FormControlLabel
               control={<Checkbox name='encryption'
-                checked={email.encrypted} onChange={(event) => { setEmail({ ...email, encrypted: event.target.checked }) }} />}
+                checked={email.encrypt} onChange={(event) => { setEmail({ ...email, encrypt: event.target.checked }) }} />}
               label='Encryption'
             />
             {
-              email.encrypted &&
+              email.encrypt &&
               <TextField
                 fullWidth
                 required
@@ -136,7 +144,7 @@ export default function Compose(props) {
             }
             <FormControlLabel
               control={<Checkbox name='signature'
-                checked={email.signed} onChange={(event) => { setEmail({ ...email, signed: event.target.checked }) }} />}
+                checked={email.sign} onChange={(event) => { setEmail({ ...email, sign: event.target.checked }) }} />}
               label='Digital Signature'
             />
           </FormGroup>
@@ -154,8 +162,8 @@ export default function Compose(props) {
             value={email.content}
             onChange={(event) => { setEmail({ ...email, content: event.target.value }) }}
           />
-          <Button type="submit" color="primary" variant='outlined' style={{ display: 'flex', marginLeft: 'auto' }}>
-            {isSending ? <CircularProgress size={20}/> : 'Send'}
+          <Button type='submit' color='primary' variant='outlined' disabled={isSending} style={{ display: 'flex', marginLeft: 'auto' }}>
+            {isSending ? <CircularProgress size={20} /> : 'Send'}
           </Button>
         </div>
       </form>
