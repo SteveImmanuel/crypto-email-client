@@ -34,7 +34,6 @@ class App extends React.Component {
         Auth.setData(data);
         this.setState({ isLoading: false });
       } else {
-        console.log('not 200')
         Auth.setAuthenticated(false);
         this.setState({ isLoading: false });
       }

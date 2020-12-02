@@ -7,6 +7,7 @@ import { useSnackbar } from 'notistack';
 import KeyboardBackspaceIcon from '@material-ui/icons/KeyboardBackspace';
 import CheckCircleIcon from '@material-ui/icons/CheckCircle';
 import LockOpenIcon from '@material-ui/icons/LockOpen';
+import LockIcon from '@material-ui/icons/Lock';
 import config from '../../config';
 
 
@@ -29,7 +30,7 @@ const styles = makeStyles({
     marginTop: 10,
     overflow: 'auto',
   },
-  contentText : {
+  contentText: {
     whiteSpace: 'pre-line',
     overflowWrap: 'break-word',
   },
@@ -46,6 +47,7 @@ export default function Read(props) {
   const [email, setEmail] = useState({});
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [loading, setLoading] = useState(true)
+  const [isDecrypted, setIsDecrypted] = useState(false)
   const [key, setKey] = React.useState('');
   const { enqueueSnackbar } = useSnackbar();
   const { id } = props.match.params;
@@ -62,9 +64,6 @@ export default function Read(props) {
 
     if (!result.redirected) {
       const data = await result.json();
-      console.log(data);
-      // let show = document.createElement('div');
-      // show.innerHTML = data.message;
       setEmail({ ...data, show: data.message });
       setLoading(false);
     }
@@ -76,10 +75,6 @@ export default function Read(props) {
   };
 
   const verify = async () => {
-    console.log({
-      msg: email.message,
-      senderEmail: email.sender
-    })
     const response = await fetch(`${config.API_URL}/api/sign/verify`, {
       method: 'POST',
       credentials: 'include',
@@ -91,11 +86,12 @@ export default function Read(props) {
         senderEmail: email.sender
       })
     })
-    if (response.status !== 200) {
+    if (response.status === 404) {
+      enqueueSnackbar("Sender's public key not found", { variant: 'error' });
+    } else if (response.status !== 200) {
       enqueueSnackbar('Error verifying message', { variant: 'error' });
     } else {
       const data = await response.json();
-      console.log(data)
       if (data.data.verified) {
         enqueueSnackbar('Email verified', { variant: 'success' });
       } else {
@@ -107,7 +103,12 @@ export default function Read(props) {
   }
 
   const openDialog = () => {
-    setIsDialogOpen(true);
+    if (email.encrypted) {
+      setEmail({ ...email, show: email.encrypted });
+      setIsDecrypted(true);
+    } else {
+      setIsDialogOpen(true);
+    }
   }
 
   const decrypt = async () => {
@@ -127,9 +128,9 @@ export default function Read(props) {
       enqueueSnackbar('Error decrypting message', { variant: 'error' });
     } else {
       const data = await response.json();
-      console.log(data)
-      setEmail({ ...email, show: data.data });
+      setEmail({ ...email, show: data.data, encrypted: data.data });
       enqueueSnackbar('Email decrypted', { variant: 'success' });
+      setIsDecrypted(true);
     }
     setLoading(false);
   }
@@ -141,6 +142,11 @@ export default function Read(props) {
       decrypt();
     }
   };
+
+  const unDecrypt = () => {
+    setIsDecrypted(false);
+    setEmail({ ...email, show: email.message });
+  }
 
   useEffect(() => {
     if (Object.keys(email).length === 0) {
@@ -172,13 +178,25 @@ export default function Read(props) {
           >
             <CheckCircleIcon />
           </IconButton>
-          <IconButton
-            color='inherit'
-            onClick={openDialog}
-            disabled={loading}
-          >
-            <LockOpenIcon />
-          </IconButton>
+          {isDecrypted ?
+
+            <IconButton
+              color='inherit'
+              onClick={unDecrypt}
+              disabled={loading}
+            >
+              <LockIcon />
+            </IconButton>
+            :
+            <IconButton
+              color='inherit'
+              onClick={openDialog}
+              disabled={loading}
+            >
+              <LockOpenIcon />
+            </IconButton>
+
+          }
         </Toolbar>
       </AppBar>
       {loading && <LinearProgress />}
@@ -211,14 +229,14 @@ export default function Read(props) {
           </Card>
           <Card className={classes.content}>
             <CardContent>
-              {email.html ? 
-                <div dangerouslySetInnerHTML={{__html: email.html || email.show }}/> :
+              {email.html ?
+                <div dangerouslySetInnerHTML={{ __html: email.html || email.show }} /> :
 
-              <Typography variant='body2' className={classes.contentText}>
-                {email.show}
-              </Typography>
+                <Typography variant='body2' className={classes.contentText}>
+                  {email.show}
+                </Typography>
 
-            }
+              }
             </CardContent>
           </Card>
 
