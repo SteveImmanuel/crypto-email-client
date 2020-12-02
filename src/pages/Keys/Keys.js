@@ -34,7 +34,8 @@ export default function Keys(props) {
 
   const classes = styles();
 
-  const saveSettings = async () => {
+  const saveSettings = async (event) => {
+    event.preventDefault();
     setLoading({ ...loading, saveSetting: true })
 
     const response = await fetch(`${config.API_URL}/api/key/save`,
@@ -144,8 +145,8 @@ export default function Keys(props) {
         </Toolbar>
       </AppBar>
 
-        <form onSubmit={saveSettings}>
-      <List>
+      <form onSubmit={saveSettings}>
+        <List>
 
           <ListItem>
             <ListItemText primary='Set Up Signing Key' />
@@ -200,10 +201,10 @@ export default function Keys(props) {
             <Button color='primary' variant='outlined' onClick={exportKey}>Export</Button>
           </ListItem>
 
-      </List>
-      <Fab color='secondary' disabled={disableFab} className={classes.fab} type='submit'>
-        {loading.saveSetting ? <CircularProgress size={20} /> : <SaveIcon />}
-      </Fab>
+        </List>
+        <Fab color='secondary' disabled={disableFab} className={classes.fab} type='submit'>
+          {loading.saveSetting ? <CircularProgress size={20} /> : <SaveIcon />}
+        </Fab>
       </form>
     </div>
   );
