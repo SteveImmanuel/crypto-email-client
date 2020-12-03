@@ -3,6 +3,8 @@ Web app email client created using ReactJS. The app is integrated with Google bu
 
 You can add additional security measures using this app by giving digital signature and encryption to the email that you sent. Encryption is done using custom block cipher called <a href=https://informatika.stei.itb.ac.id/~rinaldi.munir/Kriptografi/2020-2021/Makalah-UTS/Makalah1-Kripto-015-2020.pdf>Wonderful Journey Block Cipher</a>. Digital signature is done using ECDSA with Keccak Hash function.
 
+Backend code are located at https://github.com/jrandiny/crypto-email-backend
+
 ## Requirements
 - NodeJS (>=10.19.0)
 - NPM (>=6.14.4)
